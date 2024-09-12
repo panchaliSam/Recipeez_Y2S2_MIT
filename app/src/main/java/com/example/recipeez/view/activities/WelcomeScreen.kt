@@ -1,11 +1,12 @@
-package com.example.recipeez
+package com.example.recipeez.view.activities
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import com.example.recipeez.R
 
-class MainActivity : AppCompatActivity() {
+class WelcomeScreen : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
+        setContentView(R.layout.activity_welcome_screen)
     }
 }
