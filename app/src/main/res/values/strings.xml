@@ -1,3 +1,11 @@
 <resources>
-    <string name="app_name">Recipeez</string>
+    <string name="app_name">Receipez</string>
+
+    <!--Welcome screen content-->
+    <string name="welcomeTitle">Welcome</string>
+    <string name="welcomeContentPara">Discover new flavour and make every meal a masterpiece.</string>
+
+    <!--Button names-->
+    <string name="regBtn">Register</string>
+    <string name="loginBtn">Login</string>
 </resources>

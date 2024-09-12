@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "514246381605",
+    "project_id": "recipeez-6a3d9",
+    "storage_bucket": "recipeez-6a3d9.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:514246381605:android:2b053646fdc223fe3c2fcc",
+        "android_client_info": {
+          "package_name": "com.example.recipeez"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCBA27w8_l50dXinV5zx7hWPWvoot91r2w"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
