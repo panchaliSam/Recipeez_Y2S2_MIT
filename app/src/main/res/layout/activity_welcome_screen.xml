@@ -8,7 +8,9 @@
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:background="@color/white"
+        android:backgroundTint="@color/white">
 
         <ImageView
             android:id="@+id/imageView"
@@ -23,16 +25,19 @@
             app:layout_constraintVertical_bias="0.0"
             tools:srcCompat="@drawable/welcome" />
 
+        <!-- Adding a vertical LinearLayout for two buttons -->
+
         <TextView
             android:id="@+id/welcomeTitle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="380dp"
             android:text="@string/welcomeTitle"
+            android:textColor="@color/black"
             android:textSize="32sp"
             android:textStyle="bold"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.089"
+            app:layout_constraintHorizontal_bias="0.104"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
@@ -41,30 +46,35 @@
             android:layout_width="361dp"
             android:layout_height="67dp"
             android:text="@string/welcomeContentPara"
+            android:textColor="@color/black"
             android:textSize="16sp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.58"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/welcomeTitle"
-            app:layout_constraintVertical_bias="0.135" />
+            app:layout_constraintVertical_bias="0.157" />
 
-        <!-- Adding a vertical LinearLayout for two buttons -->
         <LinearLayout
             android:id="@+id/buttonContainer"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
             android:layout_marginTop="16dp"
-            app:layout_constraintTop_toBottomOf="@+id/welcomeContentPara"
+            android:orientation="vertical"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent">
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/welcomeContentPara">
 
             <Button
                 android:id="@+id/regWelcome"
                 android:layout_width="354dp"
                 android:layout_height="wrap_content"
                 android:backgroundTint="@color/btnActive"
-                android:text="@string/regBtn" />
+                android:text="@string/regBtn"
+                android:textColor="@color/white"
+                android:textColorHighlight="@color/white"
+                android:textColorHint="@color/white"
+                android:textColorLink="@color/white" />
 
             <Button
                 android:id="@+id/loginWelcome"
@@ -72,7 +82,11 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
                 android:backgroundTint="@color/btnActive"
-                android:text="@string/loginBtn" />
+                android:text="@string/loginBtn"
+                android:textColor="@color/white"
+                android:textColorHighlight="@color/white"
+                android:textColorHint="@color/white"
+                android:textColorLink="@color/white" />
         </LinearLayout>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
