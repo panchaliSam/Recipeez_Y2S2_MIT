@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white"
+    android:backgroundTint="@color/white"
+    tools:context=".view.activities.LoginScreen">
+
+    <!-- Back Arrow Image -->
+    <ImageView
+        android:id="@+id/imageView3"
+        android:layout_width="37dp"
+        android:layout_height="53dp"
+        android:layout_marginTop="32dp"
+        android:src="@drawable/arrowleft"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.042"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <!-- Title -->
+    <TextView
+        android:id="@+id/loginTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:text="@string/loginTitle"
+        android:textColor="@color/black"
+        android:textSize="32sp"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.075"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/imageView3" />
+
+    <!-- Subtitle Content -->
+    <TextView
+        android:id="@+id/loginContent"
+        android:layout_width="359dp"
+        android:layout_height="58dp"
+        android:layout_marginTop="16dp"
+        android:text="@string/loginContent"
+        android:textColor="@color/black"
+        android:textSize="16sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/loginTitle" />
+
+    <!-- Linear Layout for Input Fields -->
+    <LinearLayout
+        android:id="@+id/loginLinearLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:orientation="vertical"
+        android:padding="16dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/loginContent">
+
+        <!-- Email Field -->
+        <EditText
+            android:id="@+id/loginEmail"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="@string/emailAd"
+            android:inputType="textEmailAddress"
+            android:padding="12dp"
+            android:textColor="@color/black" />
+
+        <!-- Password Field -->
+        <EditText
+            android:id="@+id/loginPassword"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="@string/pwd"
+            android:inputType="textPassword"
+            android:padding="12dp"
+            android:textColor="@color/black" />
+    </LinearLayout>
+
+    <!-- Forgot Password Link -->
+    <TextView
+        android:id="@+id/loginForgotPassword"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="12dp"
+        android:clickable="true"
+        android:minHeight="48dp"
+        android:text="@string/forgotPwd"
+        android:textColor="#1536F1"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.087"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/loginLinearLayout" />
+
+    <!-- Login Button -->
+    <Button
+        android:id="@+id/loginButton"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="168dp"
+        android:layout_marginEnd="16dp"
+        android:backgroundTint="@color/btnActive"
+        android:text="@string/loginBtn"
+        android:textColor="@android:color/white"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/loginForgotPassword" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

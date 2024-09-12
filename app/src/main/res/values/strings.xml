@@ -8,4 +8,23 @@
     <!--Button names-->
     <string name="regBtn">Register</string>
     <string name="loginBtn">Login</string>
+
+    <!--Register Account-->
+    <string name="regTitle">Create your account</string>
+    <string name="regContent">Start sharing your love for cooking and join our community by creating an account today!</string>
+    <string name="forgotPwd">Forgot Password?</string>
+
+    <!--Placeholders-->
+    <string name="firstname">First Name</string>
+    <string name="lastname">Last Name</string>
+    <string name="emailAd">E-mail address</string>
+    <string name="pwd">Password</string>
+    <string name="confirmpwd">Confirm Password</string>
+
+    <!-- Login screen content -->
+    <string name="loginTitle">Login</string>
+    <string name="loginContent">Sign in to explore new recipes and save your favorites.</string>
+    <string name="noAccount">Don/t have an account?</string>
+    <string name="registerHere">Register Here</string>
+
 </resources>
