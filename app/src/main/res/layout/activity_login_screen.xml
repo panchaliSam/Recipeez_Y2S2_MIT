@@ -68,22 +68,25 @@
             android:hint="@string/emailAd"
             android:inputType="textEmailAddress"
             android:padding="12dp"
-            android:textColor="@color/black" />
+            android:textColor="@color/black"
+            android:textColorHint="@color/hintColor" />
 
         <!-- Password Field with Visibility Toggle -->
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
+
             <EditText
                 android:id="@+id/loginPassword"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_alignParentStart="true"
+                android:layout_alignParentEnd="true"
                 android:hint="@string/pwd"
                 android:inputType="textPassword"
                 android:padding="12dp"
                 android:textColor="@color/black"
-                android:layout_alignParentStart="true"
-                android:layout_alignParentEnd="true"/>
+                android:textColorHint="@color/hintColor" />
 
             <ImageView
                 android:id="@+id/eyeIcon"
