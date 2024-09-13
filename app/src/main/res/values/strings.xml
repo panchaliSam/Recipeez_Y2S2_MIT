@@ -27,4 +27,7 @@
     <string name="noAccount">Don/t have an account?</string>
     <string name="registerHere">Register Here</string>
 
+    <!-- Toggle Password Visibility -->
+    <string name="toggle_password_visibility">Toggle Password Visibility</string>
+
 </resources>
