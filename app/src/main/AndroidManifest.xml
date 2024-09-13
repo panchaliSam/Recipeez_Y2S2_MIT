@@ -13,8 +13,11 @@
         android:theme="@style/Theme.Recipeez"
         tools:targetApi="31">
         <activity
+            android:name=".view.activities.UserAccountScreen"
+            android:exported="true" />
+        <activity
             android:name=".view.activities.HomeScreen"
-            android:exported="false" />
+            android:exported="true" />
         <activity
             android:name=".view.activities.LoginScreen"
             android:exported="true" />

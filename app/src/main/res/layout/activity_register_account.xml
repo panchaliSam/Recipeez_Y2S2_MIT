@@ -1,4 +1,3 @@
-<?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
@@ -18,7 +17,9 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.042"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        android:contentDescription="TODO"
+        tools:ignore="HardcodedText" />
 
     <!-- Title -->
     <TextView
@@ -57,7 +58,7 @@
     <!-- Linear Layout for Input Fields -->
     <LinearLayout
         android:id="@+id/linearLayout"
-        android:layout_width="0dp"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
         android:orientation="vertical"
@@ -66,70 +67,85 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/regContent">
 
-        <!-- First Name Field -->
-        <EditText
-            android:id="@+id/firstName"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="@string/firstname"
-            android:inputType="textPersonName"
-            android:padding="12dp"
-            android:textColor="@color/black"
-            android:textColorHighlight="@color/black"
-            android:textColorLink="@color/black" />
-
-        <!-- Last Name Field -->
-        <EditText
-            android:id="@+id/lastName"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="@string/lastname"
-            android:inputType="textPersonName"
-            android:padding="12dp"
-            android:textColor="@color/black"
-            android:textColorHighlight="@color/black"
-            android:textColorLink="@color/black" />
-
-        <!-- Email Field -->
         <EditText
             android:id="@+id/email"
-            android:layout_width="match_parent"
+            android:layout_width="374dp"
             android:layout_height="wrap_content"
             android:hint="@string/emailAd"
             android:inputType="textEmailAddress"
             android:padding="12dp"
             android:textColor="@color/black"
             android:textColorHighlight="@color/black"
-            android:textColorLink="@color/black" />
+            android:textColorHint="#757575"
+            android:textColorLink="@color/black"
+            android:autofillHints="" />
 
-        <!-- Password Field -->
-        <EditText
-            android:id="@+id/password"
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="@string/pwd"
-            android:inputType="textPassword"
-            android:padding="12dp"
-            android:textColor="@color/black"
-            android:textColorHighlight="@color/black"
-            android:textColorLink="@color/black" />
+            android:orientation="horizontal"
+            android:gravity="center_vertical">
+
+            <EditText
+                android:id="@+id/password"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:hint="@string/pwd"
+                android:inputType="textPassword"
+                android:padding="12dp"
+                android:textColor="@color/black"
+                android:textColorHighlight="@color/black"
+                android:textColorLink="@color/black"
+                android:autofillHints=""
+                tools:ignore="InefficientWeight" />
+
+            <ImageView
+                android:id="@+id/passwordVisibilityToggle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:clickable="true"
+                android:contentDescription="@string/toggle_password_visibility"
+                android:padding="12dp"
+                android:src="@drawable/eye"
+                android:focusable="true" />
+        </LinearLayout>
 
         <!-- Confirm Password Field -->
-        <EditText
-            android:id="@+id/confirmPassword"
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="@string/confirmpwd"
-            android:inputType="textPassword"
-            android:padding="12dp"
-            android:textColor="@color/black"
-            android:textColorHighlight="@color/black"
-            android:textColorLink="@color/black" />
+            android:orientation="horizontal"
+            android:gravity="center_vertical">
+
+            <EditText
+                android:id="@+id/confirmPassword"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:autofillHints=""
+                android:hint="@string/confirmpwd"
+                android:inputType="textPassword"
+                android:padding="12dp"
+                android:textColor="@color/black"
+                android:textColorHighlight="@color/black"
+                android:textColorHint="#757575"
+                android:textColorLink="@color/black"
+                tools:ignore="InefficientWeight" />
+
+            <ImageView
+                android:id="@+id/confirmPasswordVisibilityToggle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/eye"
+                android:contentDescription="@string/toggle_password_visibility"
+                android:padding="12dp"
+                android:clickable="true"
+                android:focusable="true" />
+        </LinearLayout>
     </LinearLayout>
 
     <!-- Forgot Password Link -->
-
-    <!-- Register Button -->
     <TextView
         android:id="@+id/forgotPassword"
         android:layout_width="wrap_content"
@@ -143,8 +159,10 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.087"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/linearLayout" />
+        app:layout_constraintTop_toBottomOf="@+id/linearLayout"
+        android:focusable="true" />
 
+    <!-- Register Button -->
     <Button
         android:id="@+id/registerButton"
         android:layout_width="match_parent"
