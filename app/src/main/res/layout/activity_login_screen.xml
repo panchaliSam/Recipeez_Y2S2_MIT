@@ -70,15 +70,30 @@
             android:padding="12dp"
             android:textColor="@color/black" />
 
-        <!-- Password Field -->
-        <EditText
-            android:id="@+id/loginPassword"
+        <!-- Password Field with Visibility Toggle -->
+        <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="@string/pwd"
-            android:inputType="textPassword"
-            android:padding="12dp"
-            android:textColor="@color/black" />
+            android:layout_height="wrap_content">
+            <EditText
+                android:id="@+id/loginPassword"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="@string/pwd"
+                android:inputType="textPassword"
+                android:padding="12dp"
+                android:textColor="@color/black"
+                android:layout_alignParentStart="true"
+                android:layout_alignParentEnd="true"/>
+
+            <ImageView
+                android:id="@+id/eyeIcon"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentEnd="true"
+                android:layout_centerVertical="true"
+                android:src="@drawable/eye"
+                android:contentDescription="@string/toggle_password_visibility"/>
+        </RelativeLayout>
     </LinearLayout>
 
     <!-- Forgot Password Link -->

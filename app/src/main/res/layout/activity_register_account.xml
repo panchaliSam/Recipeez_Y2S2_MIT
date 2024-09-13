@@ -17,7 +17,9 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.042"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        android:contentDescription="TODO"
+        tools:ignore="HardcodedText" />
 
     <!-- Title -->
     <TextView
@@ -56,7 +58,7 @@
     <!-- Linear Layout for Input Fields -->
     <LinearLayout
         android:id="@+id/linearLayout"
-        android:layout_width="0dp"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
         android:orientation="vertical"
@@ -65,19 +67,19 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/regContent">
 
-        <!-- Email Field -->
         <EditText
             android:id="@+id/email"
-            android:layout_width="match_parent"
+            android:layout_width="374dp"
             android:layout_height="wrap_content"
             android:hint="@string/emailAd"
             android:inputType="textEmailAddress"
             android:padding="12dp"
             android:textColor="@color/black"
             android:textColorHighlight="@color/black"
-            android:textColorLink="@color/black" />
+            android:textColorHint="#757575"
+            android:textColorLink="@color/black"
+            android:autofillHints="" />
 
-        <!-- Password Field -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -86,24 +88,27 @@
 
             <EditText
                 android:id="@+id/password"
-                android:layout_width="0dp"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_weight="1"
                 android:hint="@string/pwd"
                 android:inputType="textPassword"
                 android:padding="12dp"
                 android:textColor="@color/black"
                 android:textColorHighlight="@color/black"
                 android:textColorLink="@color/black"
-                android:layout_weight="1" />
+                android:autofillHints=""
+                tools:ignore="InefficientWeight" />
 
             <ImageView
                 android:id="@+id/passwordVisibilityToggle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:src="@drawable/eye"
+                android:clickable="true"
                 android:contentDescription="@string/toggle_password_visibility"
                 android:padding="12dp"
-                android:clickable="true" />
+                android:src="@drawable/eye"
+                android:focusable="true" />
         </LinearLayout>
 
         <!-- Confirm Password Field -->
@@ -115,15 +120,18 @@
 
             <EditText
                 android:id="@+id/confirmPassword"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:autofillHints=""
                 android:hint="@string/confirmpwd"
                 android:inputType="textPassword"
                 android:padding="12dp"
                 android:textColor="@color/black"
                 android:textColorHighlight="@color/black"
+                android:textColorHint="#757575"
                 android:textColorLink="@color/black"
-                android:layout_weight="1" />
+                tools:ignore="InefficientWeight" />
 
             <ImageView
                 android:id="@+id/confirmPasswordVisibilityToggle"
@@ -132,7 +140,8 @@
                 android:src="@drawable/eye"
                 android:contentDescription="@string/toggle_password_visibility"
                 android:padding="12dp"
-                android:clickable="true" />
+                android:clickable="true"
+                android:focusable="true" />
         </LinearLayout>
     </LinearLayout>
 
@@ -150,7 +159,8 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.087"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/linearLayout" />
+        app:layout_constraintTop_toBottomOf="@+id/linearLayout"
+        android:focusable="true" />
 
     <!-- Register Button -->
     <Button

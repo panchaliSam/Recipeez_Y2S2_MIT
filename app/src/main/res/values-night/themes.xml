@@ -2,6 +2,10 @@
     <!-- Base application theme. -->
     <style name="Base.Theme.Recipeez" parent="Theme.Material3.DayNight.NoActionBar">
         <!-- Customize your dark theme here. -->
-        <!-- <item name="colorPrimary">@color/my_dark_primary</item> -->
+        <!-- Add status bar color -->
+        <item name="android:statusBarColor">@color/splashScreen</item>
+
+        <!-- Optional: Ensure icons are light on dark status bar -->
+        <item name="android:windowLightStatusBar">false</item> <!-- For dark icons on light background, set this to true -->
     </style>
 </resources>
