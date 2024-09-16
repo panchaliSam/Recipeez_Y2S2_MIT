@@ -2,6 +2,9 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
 
+    <!-- Permission to read external storage -->
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+
     <application
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
@@ -12,6 +15,25 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Recipeez"
         tools:targetApi="31">
+
+        <activity
+            android:name=".view.activities.Addrecipie"
+            android:exported="false" />
+        <activity
+            android:name=".view.activities.QuestionnaireScreen"
+            android:exported="false" />
+        <activity
+            android:name=".view.activities.QuostainaireActivity"
+            android:exported="false" />
+        <activity
+            android:name=".view.activities.AllergyScreen"
+            android:exported="false" />
+        <activity
+            android:name=".view.activities.VegScreen"
+            android:exported="false" />
+        <activity
+            android:name=".view.activities.RegisterVegScreen"
+            android:exported="false" />
         <activity
             android:name=".view.activities.UserAccountScreen"
             android:exported="true" />
@@ -32,7 +54,6 @@
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>

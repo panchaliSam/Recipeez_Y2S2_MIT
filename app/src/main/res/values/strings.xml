@@ -30,4 +30,21 @@
     <!-- Toggle Password Visibility -->
     <string name="toggle_password_visibility">Toggle Password Visibility</string>
 
+    <!-- Array for Cuisine Options -->
+    <string-array name="cuisine_options_array">
+        <item>Sri Lankan</item>
+        <item>Indian</item>
+        <item>Chinese</item>
+        <item>Italian</item>
+        <item>Mexican</item>
+        <item>Japanese</item>
+        <item>Other</item>
+    </string-array>
+
+    <!-- Array for Food Type Options -->
+    <string-array name="food_type_options_array">
+        <item>Veg</item>
+        <item>Non-veg</item>
+    </string-array>
+
 </resources>
