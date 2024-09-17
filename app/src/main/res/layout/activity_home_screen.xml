@@ -1,92 +1,85 @@
-<?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/white"
-    android:backgroundTint="@color/white"
+    android:orientation="vertical"
+    android:padding="16dp"
+    android:background="#f5f5f5"
     tools:context=".view.activities.HomeScreen">
 
-    <ImageView
-        android:id="@+id/imageView5"
-        android:layout_width="42dp"
-        android:layout_height="48dp"
-        android:layout_marginTop="16dp"
-        android:src="@drawable/usericon"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.894"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <TextView
-        android:id="@+id/textView2"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        android:layout_marginEnd="56dp"
-        android:text="TextView 2"
-        android:textSize="24sp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/imageView5" />
-
-    <TextView
-        android:id="@+id/textView1"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="80dp"
-        android:text="TextView 1"
-        android:textSize="24sp"
-        app:layout_constraintEnd_toStartOf="@+id/textView2"
-        app:layout_constraintHorizontal_bias="0.442"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <Spinner
-        android:id="@+id/spinner"
-        android:layout_width="163dp"
-        android:layout_height="48dp"
-        android:layout_marginStart="32dp"
-        android:layout_marginTop="16dp"
-        android:layout_marginBottom="32dp"
-        app:layout_constraintBottom_toTopOf="@+id/searchView"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textView1"
-        app:layout_constraintVertical_bias="0.0" />
-
-    <Spinner
-        android:id="@+id/spinner2"
-        android:layout_width="165dp"
-        android:layout_height="48dp"
-        android:layout_marginStart="28dp"
-        android:layout_marginTop="16dp"
-        app:layout_constraintBottom_toTopOf="@+id/searchView"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.157"
-        app:layout_constraintStart_toEndOf="@+id/spinner"
-        app:layout_constraintTop_toBottomOf="@+id/textView2"
-        app:layout_constraintVertical_bias="0.0" />
-
-    <SearchView
-        android:id="@+id/searchView"
-        android:layout_width="333dp"
-        android:layout_height="41dp"
-        android:layout_marginTop="188dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_marginBaseline="1dp" />
-
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/recipesRecyclerView"
+    <!-- Editor's Choice and For You section -->
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_marginTop="16dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/searchView"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_gravity="center"
+        android:gravity="center">
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+        <!-- Button for Editor's Choice -->
+        <Button
+            android:id="@+id/editors_choice_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Editor's Choice"
+            android:textSize="18sp"
+            android:textColor="#000"
+            android:paddingEnd="32dp"
+            android:gravity="center" />
+
+        <!-- Button for For You -->
+        <Button
+            android:id="@+id/for_you_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="For You"
+            android:textSize="18sp"
+            android:textColor="#000"
+            android:gravity="center" />
+    </LinearLayout>
+
+    <!-- "Your Recipes" section -->
+    <TextView
+        android:id="@+id/your_recipes_label"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Your Recipes"
+        android:textSize="24sp"
+        android:textColor="#000"
+        android:layout_marginTop="16dp"
+        android:layout_marginBottom="8dp" />
+
+    <!-- Reviews for today image (Firebase) -->
+    <ImageView
+        android:id="@+id/today_recipe_image"
+        android:layout_width="match_parent"
+        android:layout_height="200dp"
+        android:scaleType="centerCrop"
+        android:layout_marginBottom="16dp"
+        android:background="#ccc" />
+
+    <!-- Latest Recipes label -->
+    <TextView
+        android:id="@+id/latest_recipes_label"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Latest Recipes"
+        android:textSize="18sp"
+        android:textColor="#000"
+        android:layout_marginBottom="8dp" />
+
+    <!-- Horizontal ScrollView for Latest Recipes -->
+    <HorizontalScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:scrollbars="none">
+
+        <LinearLayout
+            android:id="@+id/latest_recipes_container"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+            <!-- Images will be loaded dynamically -->
+        </LinearLayout>
+    </HorizontalScrollView>
+
+</LinearLayout>

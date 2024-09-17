@@ -19,7 +19,7 @@ class QuestionnaireScreen : AppCompatActivity() {
     private lateinit var skipButton: Button
 
 
-    private var isVegetarianSelected: Boolean? = null
+    private var isVegetarianSelected: String = ""
 
     // Firebase Auth and Database Reference
     private lateinit var firebaseAuth: FirebaseAuth
@@ -48,12 +48,12 @@ class QuestionnaireScreen : AppCompatActivity() {
         }
 
         yesButton.setOnClickListener {
-            isVegetarianSelected = true
+            isVegetarianSelected = "Veg"
             updateButtonStates()
         }
 
         noButton.setOnClickListener {
-            isVegetarianSelected = false
+            isVegetarianSelected = "Non-Veg"
             updateButtonStates()
         }
 
@@ -76,7 +76,7 @@ class QuestionnaireScreen : AppCompatActivity() {
         continueButton.isEnabled = true
         continueButton.setBackgroundColor(getColor(R.color.green))  // Assuming green is defined in colors.xml
 
-        if (isVegetarianSelected == true) {
+        if (isVegetarianSelected == "Veg") {
             yesButton.setBackgroundColor(getColor(R.color.green))
             yesButton.setTextColor(getColor(R.color.white))
             noButton.setBackgroundColor(getColor(R.color.white))
@@ -90,14 +90,14 @@ class QuestionnaireScreen : AppCompatActivity() {
     }
 
     // Save the vegetarian selection to Firebase
-    private fun saveSelectionToFirebase(isVegetarian: Boolean) {
+    private fun saveSelectionToFirebase(isVegetarian: String) {
         val currentUser = firebaseAuth.currentUser
 
         if (currentUser != null) {
             val userId = currentUser.uid
 
             // Create a map to hold the vegetarian selection
-            val userSelection = mapOf("isVegetarian" to isVegetarian)
+            val userSelection = mapOf("foodType" to isVegetarian)
 
             // Save the selection under the user's node in Firebase
             databaseReference.child(userId).updateChildren(userSelection)
