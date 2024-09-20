@@ -1,6 +1,5 @@
 package com.example.recipeez.view.activities
 
-
 import android.annotation.SuppressLint
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
@@ -37,6 +36,7 @@ class RegisterAccount : AppCompatActivity() {
 
         firebaseAuth = FirebaseAuth.getInstance()
 
+        // Handle register button click
         binding.registerButton.setOnClickListener {
             val email = binding.email.text.toString()
             val pass = binding.password.text.toString()
@@ -47,7 +47,8 @@ class RegisterAccount : AppCompatActivity() {
                     firebaseAuth.createUserWithEmailAndPassword(email, pass).addOnCompleteListener {
                         if (it.isSuccessful) {
                             val userId = firebaseAuth.currentUser?.uid
-//                             Collect additional user data
+
+                            // Collect additional user data
                             val user = mapOf(
                                 "email" to email,
                                 "loginTime" to System.currentTimeMillis().toString()
@@ -70,8 +71,6 @@ class RegisterAccount : AppCompatActivity() {
                                         }
                                     }
                             }
-//                            val intent = Intent(this,HomeScreen::class.java)
-//                            startActivity(intent)
 
                         } else {
                             Toast.makeText(this, it.exception.toString(), Toast.LENGTH_SHORT).show()
@@ -85,7 +84,7 @@ class RegisterAccount : AppCompatActivity() {
             }
         }
 
-
+        // Toggle password visibility for password and confirm password
         passwordEditText = findViewById(R.id.password)
         confirmPasswordEditText = findViewById(R.id.confirmPassword)
         passwordVisibilityToggle = findViewById(R.id.passwordVisibilityToggle)
@@ -103,6 +102,13 @@ class RegisterAccount : AppCompatActivity() {
                 confirmPasswordVisibilityToggle,
                 isConfirmPasswordVisible
             )
+        }
+
+        // Handle "Back" button click
+        binding.regBackBtn.setOnClickListener {
+            val backIntent = Intent(this, WelcomeScreen::class.java)
+            startActivity(backIntent)
+            finish() // Optionally finish the current activity
         }
     }
 
@@ -122,3 +128,4 @@ class RegisterAccount : AppCompatActivity() {
         editText.setSelection(editText.text.length)
     }
 }
+   

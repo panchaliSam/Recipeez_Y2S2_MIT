@@ -5,7 +5,7 @@
     android:id="@+id/mainLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#F5EED7"
+    android:background="@color/white"
     android:orientation="vertical"
     android:padding="16dp"
     tools:context=".view.activities.VegScreen">
@@ -51,10 +51,10 @@
             android:id="@+id/skipButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="2dp"
             android:layout_margin="20dp"
+            android:layout_marginTop="2dp"
             android:layout_marginEnd="16dp"
-            android:backgroundTint="#007BFF"
+            android:backgroundTint="@color/btnActive"
             android:text="Skip"
             android:textColor="#FFFFFF"
             android:textSize="14sp"
@@ -286,7 +286,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="20dp"
-        android:backgroundTint="#2D663D"
+        android:backgroundTint="@color/btnActive"
         android:text="Continue"
         android:textColor="#FFFFFF" />
 </LinearLayout>

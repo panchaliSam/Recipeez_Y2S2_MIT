@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
@@ -7,9 +8,8 @@
     android:backgroundTint="@color/white"
     tools:context=".view.activities.RegisterAccount">
 
-    <!-- Back Arrow Image -->
     <ImageView
-        android:id="@+id/imageView3"
+        android:id="@+id/regBackBtn"
         android:layout_width="37dp"
         android:layout_height="53dp"
         android:layout_marginTop="32dp"
@@ -21,7 +21,6 @@
         android:contentDescription="TODO"
         tools:ignore="HardcodedText" />
 
-    <!-- Title -->
     <TextView
         android:id="@+id/regTitle"
         android:layout_width="wrap_content"
@@ -37,9 +36,8 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.213"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/imageView3" />
+        app:layout_constraintTop_toBottomOf="@+id/regBackBtn" />
 
-    <!-- Subtitle Content -->
     <TextView
         android:id="@+id/regContent"
         android:layout_width="359dp"
@@ -55,7 +53,6 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/regTitle" />
 
-    <!-- Linear Layout for Input Fields -->
     <LinearLayout
         android:id="@+id/linearLayout"
         android:layout_width="match_parent"
@@ -112,7 +109,6 @@
                 android:focusable="true" />
         </LinearLayout>
 
-        <!-- Confirm Password Field -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -146,7 +142,6 @@
         </LinearLayout>
     </LinearLayout>
 
-    <!-- Forgot Password Link -->
     <TextView
         android:id="@+id/forgotPassword"
         android:layout_width="wrap_content"
@@ -163,7 +158,6 @@
         app:layout_constraintTop_toBottomOf="@+id/linearLayout"
         android:focusable="true" />
 
-    <!-- Register Button -->
     <Button
         android:id="@+id/registerButton"
         android:layout_width="match_parent"
