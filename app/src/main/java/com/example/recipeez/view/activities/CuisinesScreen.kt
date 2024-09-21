@@ -11,7 +11,7 @@ import com.example.recipeez.R
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.FirebaseDatabase
 
-class VegScreen : AppCompatActivity() {
+class CuisinesScreen : AppCompatActivity() {
 
     private lateinit var backButton: ImageButton
     private lateinit var skipButton: Button
@@ -31,7 +31,7 @@ class VegScreen : AppCompatActivity() {
     @SuppressLint("MissingInflatedId")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_veg_screen)
+        setContentView(R.layout.activity_couisines_screen)
 
         // Initialize Firebase Auth
         firebaseAuth = FirebaseAuth.getInstance()

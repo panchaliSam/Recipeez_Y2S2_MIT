@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#EFE1C6"
+    android:background="@color/white"
     tools:context=".view.activities.QuestionnaireScreen">
     <!-- Back Button -->
     <ImageButton
@@ -21,20 +21,20 @@
         android:id="@+id/progressBarContainer"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:gravity="center_vertical"
         android:orientation="horizontal"
         android:padding="16dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        android:gravity="center_vertical">
+        app:layout_constraintTop_toTopOf="parent">
 
         <!-- Progress Indicator -->
         <LinearLayout
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
+            android:layout_marginEnd="8dp"
             android:layout_weight="1"
-            android:layout_marginEnd="8dp">
+            android:orientation="horizontal">
 
             <!-- Active step -->
             <View
@@ -68,8 +68,8 @@
             android:id="@+id/stepTextView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="2dp"
             android:layout_margin="20dp"
+            android:layout_marginTop="2dp"
             android:layout_marginEnd="16dp"
             android:text="Step 1 of 4"
             android:textColor="#8A7F6B"
@@ -81,7 +81,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginEnd="16dp"
-            android:backgroundTint="#007BFF"
+            android:backgroundTint="@color/btnActive"
             android:text="Skip"
             android:textColor="#FFFFFF"
             android:textSize="14sp"
@@ -110,7 +110,7 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="32dp"
-        android:backgroundTint="#2F5233"
+        android:backgroundTint="@color/btnActive"
         android:text="Yes"
         android:textColor="#FFFFFF"
         android:textSize="18sp"
@@ -125,7 +125,7 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
-        android:backgroundTint="#FFFFFF"
+        android:backgroundTint="@color/hintColor"
         android:text="No"
         android:textColor="#3B3A37"
         android:textSize="18sp"
