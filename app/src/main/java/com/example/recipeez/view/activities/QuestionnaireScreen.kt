@@ -66,7 +66,7 @@ class QuestionnaireScreen : AppCompatActivity() {
         }
 
         skipButton.setOnClickListener {
-            val intent = Intent(this, VegScreen::class.java)
+            val intent = Intent(this, CuisinesScreen::class.java)
             startActivity(intent)
             finish()
         }
@@ -106,7 +106,7 @@ class QuestionnaireScreen : AppCompatActivity() {
                         Toast.makeText(this, "Selection saved successfully!", Toast.LENGTH_SHORT)
                             .show()
 
-                        val intent = Intent(this, VegScreen::class.java)
+                        val intent = Intent(this, CuisinesScreen::class.java)
                         startActivity(intent)
                         finish()
 

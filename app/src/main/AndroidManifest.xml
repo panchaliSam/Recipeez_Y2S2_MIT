@@ -29,7 +29,7 @@
             android:name=".view.activities.AllergyScreen"
             android:exported="false" />
         <activity
-            android:name=".view.activities.VegScreen"
+            android:name=".view.activities.CuisinesScreen"
             android:exported="false" />
         <activity
             android:name=".view.activities.UserAccountScreen"

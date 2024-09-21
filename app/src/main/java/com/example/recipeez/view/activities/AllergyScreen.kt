@@ -60,7 +60,7 @@ class AllergyScreen : AppCompatActivity() {
         setUpAllergySelection(wheatAllergyButton, "Wheat")
 
         backButton.setOnClickListener {
-            val intent = Intent(this, VegScreen::class.java)
+            val intent = Intent(this, CuisinesScreen::class.java)
             startActivity(intent)
             finish()
         }

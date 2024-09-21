@@ -13,8 +13,8 @@
     <!-- Back Button -->
     <ImageButton
         android:id="@+id/backButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="61dp"
+        android:layout_height="57dp"
         android:layout_gravity="start"
         android:background="@null"
         android:contentDescription="Back"
