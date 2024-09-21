@@ -1,0 +1,6 @@
+<resources>
+    <!-- Define a custom style for the menu -->
+    <style name="CustomMenuStyle" parent="Widget.AppCompat.PopupMenu.Overflow">
+        <item name="android:itemBackground">@color/statusBar</item>
+    </style>
+</resources>

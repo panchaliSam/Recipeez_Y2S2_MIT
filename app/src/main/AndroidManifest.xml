@@ -35,7 +35,7 @@
             android:name=".view.activities.UserAccountScreen"
             android:exported="true" />
         <activity
-            android:name=".view.activities.HomeScreen"
+            android:name=".view.activities.Main"
             android:exported="true" />
         <activity
             android:name=".view.activities.LoginScreen"

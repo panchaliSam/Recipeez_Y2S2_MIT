@@ -66,7 +66,7 @@ class AllergyScreen : AppCompatActivity() {
         }
 
         skipButton.setOnClickListener {
-            val intent = Intent(this, HomeScreen::class.java)
+            val intent = Intent(this, Main::class.java)
             startActivity(intent)
             finish()
         }
@@ -106,7 +106,7 @@ class AllergyScreen : AppCompatActivity() {
             database.child(userId).updateChildren(userUpdates).addOnCompleteListener { task ->
                 if (task.isSuccessful) {
                     Toast.makeText(this, "Allergies saved successfully!", Toast.LENGTH_SHORT).show()
-                    val intent = Intent(this, HomeScreen::class.java)
+                    val intent = Intent(this, Main::class.java)
                     startActivity(intent)
                     finish()
                 } else {
