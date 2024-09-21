@@ -33,7 +33,7 @@ class LoginScreen : AppCompatActivity() {
             if (email.isNotEmpty() && pass.isNotEmpty()) {
                 firebaseAuth.signInWithEmailAndPassword(email, pass).addOnCompleteListener { task ->
                     if (task.isSuccessful) {
-                        val loginBtn = Intent(this, HomeScreen::class.java)
+                        val loginBtn = Intent(this, Main::class.java)
                         startActivity(loginBtn)
                         finish() // Optionally finish the LoginScreen activity so the user can't navigate back
                     } else {
