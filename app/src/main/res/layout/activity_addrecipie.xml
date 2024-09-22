@@ -49,7 +49,6 @@
                     android:layout_marginStart="16dp"
                     android:text="Edit Profile"
                     android:textColor="#FFFFFF" />
-                <!--                    android:background="@drawable/btn_rounded" -->
             </LinearLayout>
 
             <!-- Form Fields -->
@@ -91,38 +90,65 @@
                 android:layout_marginBottom="8dp"
                 android:orientation="horizontal">
 
-                <!-- Dropdown 1: Cuisine Selection -->
                 <Spinner
                     android:id="@+id/cuisineDropdown"
-                    android:layout_width="wrap_content"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_margin="20dp"
-                    android:layout_marginEnd="16dp"
+                    android:layout_weight="1"
                     android:entries="@array/cuisine_options_array"
                     android:spinnerMode="dropdown" />
 
-                <!-- Dropdown 2: Food Type Selection -->
                 <Spinner
                     android:id="@+id/foodTypeDropdown"
-                    android:layout_width="wrap_content"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_margin="20dp"
-                    android:layout_marginEnd="16dp"
+                    android:layout_weight="1"
                     android:backgroundTint="#007BFF"
                     android:entries="@array/food_type_options_array"
                     android:spinnerMode="dropdown" />
             </LinearLayout>
 
-            <EditText
-                android:id="@+id/ingredients"
+            <!-- Ingredients and Quantity Input -->
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="8dp"
-                android:hint="Ingredients"
-                android:inputType="text"
-                android:padding="12dp"
-                android:textColor="@color/black"
-                android:textColorHint="@color/hintColor" />
+                android:orientation="horizontal">
+
+                <Spinner
+                    android:id="@+id/ingredientsDropdown"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:entries="@array/ingredient_options_array"
+                    android:hint="Ingredients"
+                    android:spinnerMode="dropdown" />
+
+                <Spinner
+                    android:id="@+id/quantityDropdown"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:backgroundTint="#007BFF"
+                    android:entries="@array/ingredient_quantity_array"
+                    android:hint="Quantity"
+                    android:spinnerMode="dropdown" />
+            </LinearLayout>
+
+            <!-- Dynamic Ingredients Container -->
+            <LinearLayout
+                android:id="@+id/dynamic_ingredients_container"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:orientation="vertical" />
+
+            <Button
+                android:id="@+id/add_button"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:text="Add Ingredient"
+                android:textColor="#FFFFFF" />
 
             <EditText
                 android:id="@+id/steps"
@@ -134,6 +160,21 @@
                 android:padding="12dp"
                 android:textColor="@color/black"
                 android:textColorHint="@color/hintColor" />
+
+            <LinearLayout
+                android:id="@+id/dynamic_steps_container"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:orientation="vertical" />
+
+            <Button
+                android:id="@+id/add_steps"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:text="Add Steps"
+                android:textColor="#FFFFFF" />
 
             <EditText
                 android:id="@+id/preparation_time"
@@ -183,18 +224,14 @@
                 android:layout_gravity="center_horizontal"
                 android:layout_marginBottom="16dp"
                 android:contentDescription="Upload Photos"
-                android:src="@drawable/uploadimage"/>
+                android:src="@drawable/uploadimage" />
 
             <Button
                 android:id="@+id/imageButton"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Upload Image"
                 android:layout_gravity="center_horizontal"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"/>
+                android:text="Upload Image" />
 
             <!-- Submit Button -->
             <Button
@@ -203,12 +240,7 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="end|bottom"
                 android:text="Submit"
-                android:textColor="#FFFFFF"
-
-                />
-
+                android:textColor="#FFFFFF" />
         </LinearLayout>
     </ScrollView>
 </androidx.constraintlayout.widget.ConstraintLayout>
-
-

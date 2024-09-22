@@ -6,6 +6,7 @@ import android.graphics.Color
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.Button
+import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.Toast
@@ -108,10 +109,11 @@ class HomeScreen : AppCompatActivity() {
                     // First recipe goes to loadBannerRecipes
                     val firstRecipe = recipesList.first()
                     val imageUrl = firstRecipe.child("imageUrl").getValue(String::class.java)
+                    val recipeId = firstRecipe.key // Get the recipe ID
                     val vegPreference = firstRecipe.child("foodType").getValue(String::class.java) ?: ""
 
                     if (vegPreference == foodType || foodType.isEmpty()) {
-                        loadBannerRecipes(imageUrl)
+                        loadBannerRecipes(imageUrl,recipeId)
                     }
 
                     // Rest of the recipes go to loadLatestRecipes
@@ -126,34 +128,58 @@ class HomeScreen : AppCompatActivity() {
         })
     }
 
-    private fun loadBannerRecipes(imageUrl: String?) {
+    private fun loadBannerRecipes(imageUrl: String?, recipeId: String?) {
         imageUrl?.let {
+            // Load the image into the todayRecipeImage (the banner image)
             Glide.with(this@HomeScreen)
                 .load(it)
                 .into(todayRecipeImage)
+
+            // Add click listener to the banner image
+            todayRecipeImage.setOnClickListener {
+                if (recipeId != null) {
+                    val intent = Intent(this@HomeScreen, RecipieScreen::class.java)
+                    intent.putExtra("RECIPE_ID", recipeId)  // Pass the recipe ID to the RecipeScreen
+                    startActivity(intent)
+                    Toast.makeText(this, "Recipe ID: $recipeId", Toast.LENGTH_SHORT).show()
+                } else {
+                    Toast.makeText(this@HomeScreen, "Recipe ID not found", Toast.LENGTH_SHORT).show()
+                }
+            }
+
         } ?: run {
             Toast.makeText(this@HomeScreen, "No banner image available", Toast.LENGTH_SHORT).show()
         }
     }
+
 
     private fun loadLatestRecipes(latestRecipes: List<DataSnapshot>, foodType: String) {
         latestRecipesContainer.removeAllViews()
 
         latestRecipes.forEach { recipeSnapshot ->
             val imageUrl = recipeSnapshot.child("imageUrl").getValue(String::class.java)
+            val recipeId = recipeSnapshot.key  // Assuming you have a unique ID for each recipe
             val vegPreference = recipeSnapshot.child("foodType").getValue(String::class.java) ?: ""
 
             if (vegPreference == foodType || foodType.isEmpty()) {
-                val imageView = ImageView(this@HomeScreen)
+                val imageButton = ImageButton(this@HomeScreen)
                 val params = LinearLayout.LayoutParams(250, 250).apply { setMargins(8, 0, 8, 0) }
-                imageView.layoutParams = params
-                imageView.scaleType = ImageView.ScaleType.CENTER_CROP
+                imageButton.layoutParams = params
+                imageButton.scaleType = ImageView.ScaleType.CENTER_CROP
 
                 Glide.with(this@HomeScreen)
                     .load(imageUrl)
-                    .into(imageView)
-
-                latestRecipesContainer.addView(imageView)
+                    .into(imageButton)
+// Add click listener to the ImageButton
+                imageButton.setOnClickListener {
+                    if (recipeId != null) {
+                        val intent = Intent(this@HomeScreen, RecipieScreen::class.java)
+                        intent.putExtra("RECIPE_ID", recipeId)  // Pass the recipe ID to the RecipeScreen
+                        startActivity(intent)
+                        Toast.makeText(this, "Recipe ID: $recipeId", Toast.LENGTH_SHORT).show()
+                    }
+                }
+                latestRecipesContainer.addView(imageButton)
             }
         }
     }

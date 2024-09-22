@@ -1,5 +1,6 @@
 package com.example.recipeez.view.activities
 
+import android.annotation.SuppressLint
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
@@ -17,7 +18,8 @@ class Addrecipie : AppCompatActivity() {
     private lateinit var description: EditText
     private lateinit var cuisineDropdown: Spinner
     private lateinit var foodTypeDropdown: Spinner
-    private lateinit var ingredients: EditText
+    private lateinit var ingredientsDropdown: Spinner
+    private lateinit var quantityDropdown: Spinner
     private lateinit var steps: EditText
     private lateinit var preparationTime: EditText
     private lateinit var cookingTime: EditText
@@ -25,6 +27,10 @@ class Addrecipie : AppCompatActivity() {
     private lateinit var submitButton: Button
     private lateinit var selectImageButton: Button
     private lateinit var imagePreview: ImageView
+    private lateinit var dynamicIngredientsContainer: LinearLayout
+    private lateinit var addButton: Button
+    private lateinit var dynamicStepsContainer: LinearLayout
+    private lateinit var addStepsButton: Button
 
     // Firebase authentication and database references
     private lateinit var firebaseAuth: FirebaseAuth
@@ -36,6 +42,9 @@ class Addrecipie : AppCompatActivity() {
     private var imageUri: Uri? = null
     private val PICK_IMAGE_REQUEST = 1
 
+    private var stepCounter = 1
+
+    @SuppressLint("MissingInflatedId")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_addrecipie)
@@ -45,7 +54,8 @@ class Addrecipie : AppCompatActivity() {
         description = findViewById(R.id.description)
         cuisineDropdown = findViewById(R.id.cuisineDropdown)
         foodTypeDropdown = findViewById(R.id.foodTypeDropdown)
-        ingredients = findViewById(R.id.ingredients)
+        ingredientsDropdown = findViewById(R.id.ingredientsDropdown)
+        quantityDropdown = findViewById(R.id.quantityDropdown)
         steps = findViewById(R.id.steps)
         preparationTime = findViewById(R.id.preparation_time)
         cookingTime = findViewById(R.id.cooking_time)
@@ -53,11 +63,23 @@ class Addrecipie : AppCompatActivity() {
         submitButton = findViewById(R.id.submit_button)
         selectImageButton = findViewById(R.id.imageButton)
         imagePreview = findViewById(R.id.image_preview)
+        dynamicIngredientsContainer = findViewById(R.id.dynamic_ingredients_container)
+        addButton = findViewById(R.id.add_button)
+        dynamicStepsContainer = findViewById(R.id.dynamic_steps_container)
+        addStepsButton = findViewById(R.id.add_steps)
 
         // Initialize FirebaseAuth
         firebaseAuth = FirebaseAuth.getInstance()
         selectImageButton.setOnClickListener {
             openImageChooser()
+        }
+
+        // Set up click listener for the add button to add new ingredient and quantity spinners
+        addButton.setOnClickListener {
+            addIngredientQuantityFields()
+        }
+        addStepsButton.setOnClickListener {
+            addStepsFields()
         }
         // Set up click listener for the submit button
         submitButton.setOnClickListener {
@@ -68,6 +90,65 @@ class Addrecipie : AppCompatActivity() {
             }
         }
     }
+
+    private fun addStepsFields() {
+        // Create a new EditText for the step
+        val newStepEditText = EditText(this)
+        newStepEditText.hint = "Enter step $stepCounter"
+        newStepEditText.setPadding(16, 16, 16, 16)
+        newStepEditText.layoutParams = LinearLayout.LayoutParams(
+            LinearLayout.LayoutParams.MATCH_PARENT,
+            LinearLayout.LayoutParams.WRAP_CONTENT
+        )
+        stepCounter++
+        // Add the new EditText to the dynamicStepsContainer
+        dynamicStepsContainer.addView(newStepEditText)
+    }
+
+    private fun addIngredientQuantityFields() {
+        // Create a horizontal LinearLayout
+        val horizontalLayout = LinearLayout(this)
+        horizontalLayout.orientation = LinearLayout.HORIZONTAL
+        horizontalLayout.layoutParams = LinearLayout.LayoutParams(
+            LinearLayout.LayoutParams.MATCH_PARENT,
+            LinearLayout.LayoutParams.WRAP_CONTENT
+        )
+
+        // Create new ingredient and quantity spinners
+        val newIngredientSpinner = Spinner(this)
+        val newQuantitySpinner = Spinner(this)
+
+        // Set layout parameters for the spinners
+        val spinnerLayoutParams = LinearLayout.LayoutParams(
+            0, // Width is set to 0, since we will use weight
+            LinearLayout.LayoutParams.WRAP_CONTENT,
+            1f // Weight to distribute space evenly
+        )
+
+        newIngredientSpinner.layoutParams = spinnerLayoutParams
+        newQuantitySpinner.layoutParams = spinnerLayoutParams
+
+        // Populate the spinners with the existing arrays from resources
+        val ingredientAdapter = ArrayAdapter.createFromResource(
+            this, R.array.ingredient_options_array, android.R.layout.simple_spinner_item
+        )
+        ingredientAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+        newIngredientSpinner.adapter = ingredientAdapter
+
+        val quantityAdapter = ArrayAdapter.createFromResource(
+            this, R.array.ingredient_quantity_array, android.R.layout.simple_spinner_item
+        )
+        quantityAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+        newQuantitySpinner.adapter = quantityAdapter
+
+        // Add the spinners to the horizontal layout
+        horizontalLayout.addView(newIngredientSpinner)
+        horizontalLayout.addView(newQuantitySpinner)
+
+        // Add the horizontal layout to the dynamic ingredients container
+        dynamicIngredientsContainer.addView(horizontalLayout)
+    }
+
 
     private fun openImageChooser() {
         val intent = Intent()
@@ -113,14 +194,31 @@ class Addrecipie : AppCompatActivity() {
         val desc = description.text.toString().trim()
         val cuisine = cuisineDropdown.selectedItem.toString()
         val foodType = foodTypeDropdown.selectedItem.toString()
-        val ingredientList = ingredients.text.toString().trim()
+        val ingredientsList = ingredientsDropdown.selectedItem.toString()
+        val quantityList = quantityDropdown.selectedItem.toString()
         val stepList = steps.text.toString().trim()
         val prepTime = preparationTime.text.toString().trim()
         val cookTime = cookingTime.text.toString().trim()
         val totalTimeValue = totalTime.text.toString().trim()
+        val dynamicIngredients = mutableListOf<String>()
+        val dynamicQuantities = mutableListOf<String>()
+        val dynamicSteps = mutableListOf<String>()
+
+        // Iterate through all dynamically added spinners in the container
+        for (i in 0 until dynamicIngredientsContainer.childCount step 2) {
+            val ingredientSpinner = dynamicIngredientsContainer.getChildAt(i) as Spinner
+            val quantitySpinner = dynamicIngredientsContainer.getChildAt(i + 1) as Spinner
+            dynamicIngredients.add(ingredientSpinner.selectedItem.toString())
+            dynamicQuantities.add(quantitySpinner.selectedItem.toString())
+        }
+
+        for (i in 0 until dynamicStepsContainer.childCount) {
+            val stepEditText = dynamicStepsContainer.getChildAt(i) as EditText
+            dynamicSteps.add(stepEditText.text.toString().trim())
+        }
 
         // Check if any field is empty
-        if (name.isEmpty() || desc.isEmpty() || ingredientList.isEmpty() || stepList.isEmpty() ||
+        if (name.isEmpty() || desc.isEmpty() || stepList.isEmpty() ||
             prepTime.isEmpty() || cookTime.isEmpty() || totalTimeValue.isEmpty()
         ) {
             Toast.makeText(this, "Please fill all fields", Toast.LENGTH_SHORT).show()
@@ -136,13 +234,17 @@ class Addrecipie : AppCompatActivity() {
             description = desc,
             cuisine = cuisine,
             foodType = foodType,
-            ingredients = ingredientList,
+            ingredientsList = ingredientsList,
+            quantityList = quantityList,
             steps = stepList,
             preparationTime = prepTime,
             cookingTime = cookTime,
             totalTime = totalTimeValue,
             imageUrl = imageUrl,
-            userId = user.uid // Store the user's ID as well
+            userId = user.uid,
+            dynamicIngredients = dynamicIngredients,
+            dynamicQuantities = dynamicQuantities,
+            dynamicSteps = dynamicSteps
         )
 
         // Store data in Firebase under the unique ID
@@ -162,13 +264,14 @@ class Addrecipie : AppCompatActivity() {
     private fun clearFormFields() {
         recipeName.text.clear()
         description.text.clear()
-        ingredients.text.clear()
         steps.text.clear()
         preparationTime.text.clear()
         cookingTime.text.clear()
         totalTime.text.clear()
         imagePreview.setImageResource(R.drawable.uploadimage) // Reset image preview
         imageUri = null
+        dynamicIngredientsContainer.removeAllViews()
+        dynamicStepsContainer.removeAllViews()
     }
 
     // Define the Recipe data model
@@ -177,12 +280,17 @@ class Addrecipie : AppCompatActivity() {
         val description: String,
         val cuisine: String,
         val foodType: String,
-        val ingredients: String,
+        val ingredientsList: String,
+        val quantityList: String,
         val steps: String,
         val preparationTime: String,
         val cookingTime: String,
         val totalTime: String,
         val imageUrl: String? = null,
         val userId: String // User ID of the person who submitted the recipe
+        , val dynamicIngredients: List<String>,
+        val dynamicQuantities: List<String>,
+        val dynamicSteps: List<String>
     )
+
 }

@@ -59,7 +59,6 @@ dependencies {
     implementation("com.google.firebase:firebase-storage-ktx")   // Firebase Storage
     implementation("com.google.firebase:firebase-auth-ktx")      // Firebase Authentication
     implementation("com.google.firebase:firebase-analytics-ktx") // Firebase Analytics
-
     // Glide for image loading
     implementation("com.github.bumptech.glide:glide:4.15.1")
 
