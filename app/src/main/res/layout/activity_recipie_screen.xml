@@ -1,4 +1,5 @@
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -129,7 +130,11 @@
                 android:id="@+id/tabs"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="16dp">
+                android:layout_marginTop="16dp"
+                app:tabMode="fixed"
+                app:tabGravity="fill"
+                >
+
 
                 <com.google.android.material.tabs.TabItem
                     android:id="@+id/tab_ingredients"
@@ -144,19 +149,18 @@
                     android:text="Step by Step" />
             </com.google.android.material.tabs.TabLayout>
 
-            <!-- Ingredients RecyclerView -->
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/ingredients_recycler_view"
+            <LinearLayout
+                android:id="@+id/ingredients_container"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="16dp" />
+                android:orientation="vertical" />
 
-            <!-- Steps RecyclerView -->
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/steps_recycler_view"
+            <LinearLayout
+                android:id="@+id/steps_container"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="16dp" />
+                android:orientation="vertical"
+                android:visibility="gone" /> <!-- Initially hidden -->
 
         </LinearLayout>
     </ScrollView>

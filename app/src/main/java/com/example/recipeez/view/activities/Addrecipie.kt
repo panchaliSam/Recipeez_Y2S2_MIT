@@ -184,7 +184,6 @@ class Addrecipie : AppCompatActivity() {
         // Check if the user is authenticated
         val user = firebaseAuth.currentUser
         if (user == null) {
-            // If not authenticated, show a message
             Toast.makeText(this, "Please log in to submit a recipe", Toast.LENGTH_SHORT).show()
             return
         }
@@ -194,62 +193,65 @@ class Addrecipie : AppCompatActivity() {
         val desc = description.text.toString().trim()
         val cuisine = cuisineDropdown.selectedItem.toString()
         val foodType = foodTypeDropdown.selectedItem.toString()
-        val ingredientsList = ingredientsDropdown.selectedItem.toString()
-        val quantityList = quantityDropdown.selectedItem.toString()
-        val stepList = steps.text.toString().trim()
         val prepTime = preparationTime.text.toString().trim()
         val cookTime = cookingTime.text.toString().trim()
         val totalTimeValue = totalTime.text.toString().trim()
-        val dynamicIngredients = mutableListOf<String>()
-        val dynamicQuantities = mutableListOf<String>()
-        val dynamicSteps = mutableListOf<String>()
 
-        // Iterate through all dynamically added spinners in the container
-        for (i in 0 until dynamicIngredientsContainer.childCount step 2) {
-            val ingredientSpinner = dynamicIngredientsContainer.getChildAt(i) as Spinner
-            val quantitySpinner = dynamicIngredientsContainer.getChildAt(i + 1) as Spinner
-            dynamicIngredients.add(ingredientSpinner.selectedItem.toString())
-            dynamicQuantities.add(quantitySpinner.selectedItem.toString())
+        // Initialize lists for ingredients, quantities, and steps
+        val ingredientsList = mutableListOf<String>()
+        val quantityList = mutableListOf<String>()
+        val stepsList = mutableListOf<String>() // For all steps
+
+        // Add selected ingredient and quantity from dropdowns to the list
+        ingredientsList.add(ingredientsDropdown.selectedItem.toString())
+        quantityList.add(quantityDropdown.selectedItem.toString())
+
+        // Add the initial step to the steps list
+        stepsList.add(steps.text.toString().trim())
+
+        // Iterate through all dynamically added spinners in the container for ingredients and quantities
+        for (i in 0 until dynamicIngredientsContainer.childCount) {
+            val ingredientSpinner = (dynamicIngredientsContainer.getChildAt(i) as LinearLayout).getChildAt(0) as Spinner
+            val quantitySpinner = (dynamicIngredientsContainer.getChildAt(i) as LinearLayout).getChildAt(1) as Spinner
+            ingredientsList.add(ingredientSpinner.selectedItem.toString())
+            quantityList.add(quantitySpinner.selectedItem.toString())
         }
 
+        // Iterate through all dynamically added step fields
         for (i in 0 until dynamicStepsContainer.childCount) {
             val stepEditText = dynamicStepsContainer.getChildAt(i) as EditText
-            dynamicSteps.add(stepEditText.text.toString().trim())
+            stepsList.add(stepEditText.text.toString().trim()) // Add dynamic steps to the list
         }
 
-        // Check if any field is empty
-        if (name.isEmpty() || desc.isEmpty() || stepList.isEmpty() ||
-            prepTime.isEmpty() || cookTime.isEmpty() || totalTimeValue.isEmpty()
-        ) {
+        // Check if any required field is empty
+        if (name.isEmpty() || desc.isEmpty() || stepsList.isEmpty() ||
+            prepTime.isEmpty() || cookTime.isEmpty() || totalTimeValue.isEmpty()) {
             Toast.makeText(this, "Please fill all fields", Toast.LENGTH_SHORT).show()
             return
         }
 
-        // Create a unique ID for each recipe entry
+        // Create a unique ID for the recipe entry
         val recipeId = recipesRef.push().key
 
-        // Create a recipe object to store data
-        val recipe = Recipe(
-            name = name,
-            description = desc,
-            cuisine = cuisine,
-            foodType = foodType,
-            ingredientsList = ingredientsList,
-            quantityList = quantityList,
-            steps = stepList,
-            preparationTime = prepTime,
-            cookingTime = cookTime,
-            totalTime = totalTimeValue,
-            imageUrl = imageUrl,
-            userId = user.uid,
-            dynamicIngredients = dynamicIngredients,
-            dynamicQuantities = dynamicQuantities,
-            dynamicSteps = dynamicSteps
+        // Create a map for the recipe data
+        val recipeData = hashMapOf(
+            "name" to name,
+            "description" to desc,
+            "cuisine" to cuisine,
+            "foodType" to foodType,
+            "ingredientsList" to ingredientsList, // Store the list of all ingredients
+            "quantityList" to quantityList,       // Store the list of all quantities
+            "stepsList" to stepsList,             // Store the list of all steps
+            "preparationTime" to prepTime,
+            "cookingTime" to cookTime,
+            "totalTime" to totalTimeValue,
+            "imageUrl" to imageUrl,
+            "userId" to user.uid
         )
 
         // Store data in Firebase under the unique ID
         if (recipeId != null) {
-            recipesRef.child(recipeId).setValue(recipe).addOnCompleteListener { task ->
+            recipesRef.child(recipeId).setValue(recipeData).addOnCompleteListener { task ->
                 if (task.isSuccessful) {
                     Toast.makeText(this, "Recipe added successfully", Toast.LENGTH_SHORT).show()
                     clearFormFields() // Optionally clear the form
@@ -259,6 +261,7 @@ class Addrecipie : AppCompatActivity() {
             }
         }
     }
+
 
     // Clear form fields after submission
     private fun clearFormFields() {
@@ -274,23 +277,5 @@ class Addrecipie : AppCompatActivity() {
         dynamicStepsContainer.removeAllViews()
     }
 
-    // Define the Recipe data model
-    data class Recipe(
-        val name: String,
-        val description: String,
-        val cuisine: String,
-        val foodType: String,
-        val ingredientsList: String,
-        val quantityList: String,
-        val steps: String,
-        val preparationTime: String,
-        val cookingTime: String,
-        val totalTime: String,
-        val imageUrl: String? = null,
-        val userId: String // User ID of the person who submitted the recipe
-        , val dynamicIngredients: List<String>,
-        val dynamicQuantities: List<String>,
-        val dynamicSteps: List<String>
-    )
 
 }

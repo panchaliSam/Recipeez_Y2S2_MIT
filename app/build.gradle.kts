@@ -59,11 +59,13 @@ dependencies {
     implementation("com.google.firebase:firebase-storage-ktx")   // Firebase Storage
     implementation("com.google.firebase:firebase-auth-ktx")      // Firebase Authentication
     implementation("com.google.firebase:firebase-analytics-ktx") // Firebase Analytics
+
     // Glide for image loading
     implementation("com.github.bumptech.glide:glide:4.15.1")
 
     // Splash Screen API
     implementation("androidx.core:core-splashscreen:1.0.1")
+
 
     // Test dependencies
     testImplementation("junit:junit:4.13.2")
