@@ -17,6 +17,9 @@
         android:theme="@style/Theme.Recipeez"
         tools:targetApi="31">
         <activity
+            android:name=".view.activities.searchScreen"
+            android:exported="false" />
+        <activity
             android:name=".view.activities.StepsFragment"
             android:exported="false" />
         <activity
