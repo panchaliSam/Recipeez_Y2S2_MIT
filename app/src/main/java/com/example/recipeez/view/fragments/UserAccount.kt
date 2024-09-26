@@ -42,7 +42,26 @@ class UserAccount : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        fetchUserData()
 
+        // Logout button click listener
+        binding.logoutButton.setOnClickListener {
+            firebaseAuth.signOut()
+            Toast.makeText(requireContext(), "Logged out successfully", Toast.LENGTH_SHORT).show()
+            requireActivity().finish() // Finish the activity or navigate back to login screen
+        }
+
+        // View My Recipes button click listener
+        binding.viewMyRecipes.setOnClickListener {
+            val addRecipeFragment = AddRecipe()
+            parentFragmentManager.beginTransaction()
+                .replace(R.id.fragment_container, addRecipeFragment) // Use the correct container ID
+                .addToBackStack(null) // Add to back stack so user can navigate back
+                .commit()
+        }
+    }
+
+    private fun fetchUserData() {
         // Get current user's ID
         val currentUserId = firebaseAuth.currentUser?.uid
 
@@ -70,13 +89,6 @@ class UserAccount : Fragment() {
             }
         } else {
             Toast.makeText(requireContext(), "User not logged in", Toast.LENGTH_SHORT).show()
-        }
-
-        // Logout button click listener
-        binding.logoutButton.setOnClickListener {
-            firebaseAuth.signOut()
-            Toast.makeText(requireContext(), "Logged out successfully", Toast.LENGTH_SHORT).show()
-            requireActivity().finish() // Finish the activity or navigate back to login screen
         }
     }
 
