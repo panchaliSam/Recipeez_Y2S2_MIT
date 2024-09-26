@@ -46,7 +46,83 @@
         <item>Veg</item>
         <item>Non-veg</item>
     </string-array>
+    <string-array name="ingredient_options_array">
+        <item>Flour</item>
+        <item>Sugar</item>
+        <item>Salt</item>
+        <item>Olive Oil</item>
+        <item>Butter</item>
+        <item>Eggs</item>
+        <item>Milk</item>
+        <item>Garlic</item>
+        <item>Onions</item>
+        <item>Chicken</item>
+        <item>Beef</item>
+        <item>Rice</item>
+        <item>Pasta</item>
+        <item>Tomatoes</item>
+        <item>Potatoes</item>
+        <item>Carrots</item>
+        <item>Cheese</item>
+        <item>Black Pepper</item>
+        <item>Baking Powder</item>
+        <item>Vanilla Extract</item>
+    </string-array>
+    <string-array name="ingredient_quantity_array">
+        <item>1 tsp</item>
+        <item>1 tbsp</item>
+        <item>1/4 cup</item>
+        <item>1/2 cup</item>
+        <item>1 cup</item>
+        <item>1/3 cup</item>
+        <item>1/8 tsp</item>
+        <item>2 tsp</item>
+        <item>2 tbsp</item>
+        <item>2 cups</item>
+        <item>100 ml</item>
+        <item>200 ml</item>
+        <item>250 ml</item>
+        <item>500 ml</item>
+        <item>1 liter</item>
+        <item>50 grams</item>
+        <item>100 grams</item>
+        <item>250 grams</item>
+        <item>500 grams</item>
+        <item>1 kg</item>
+    </string-array>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
+
+    <string name="logOutBtn">Logout</string>
+    <string name="editProfile">Edit Profile</string>
+    <string name="myRecipeBtn">My Recipe</string>
+    <string name="resetPwdBtn">Reset Password</string>
+
+    <!--Add New Recipe Content-->
+    <string name="addRecipeTitle">Add New Recipe</string>
+    <!-- EditText Hints -->
+    <string name="recipe_name_hint">Recipe Name</string>
+    <string name="description_hint">Description</string>
+    <string name="ingredients_hint">Ingredients</string>
+    <string name="steps_hint">Steps</string>
+    <string name="preparation_time_hint">Meal Preparation Time</string>
+    <string name="cooking_time_hint">Meal Cooking Time</string>
+    <string name="total_time_hint">Total Time</string>
+
+    <!-- Upload Section -->
+    <string name="upload_photos">Upload Photos</string>
+    <string name="upload_image_button">Upload Image</string>
+    <string name="profile_image_description">Profile Image</string>
+
+    <!-- Submit Button -->
+    <string name="submit_button_text">Submit</string>
+
+    <!-- Miscellaneous -->
+    <string name="select_image">Select Image</string>
+    <string name="fill_all_fields">Please fill all fields</string>
+    <string name="image_upload_failed">Image upload failed</string>
+    <string name="recipe_added_successfully">Recipe added successfully</string>
+    <string name="failed_to_add_recipe">Failed to add recipe</string>
+    <string name="log_in_to_submit">Please log in to submit a recipe</string>
 
 </resources>

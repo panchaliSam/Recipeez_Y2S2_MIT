@@ -18,7 +18,6 @@
             android:layout_width="100dp"
             android:layout_height="100dp"
             android:layout_marginTop="32dp"
-            android:layout_marginBottom="16dp"
             android:contentDescription="Profile Image"
             android:scaleType="centerCrop"
             android:src="@drawable/user"
@@ -34,9 +33,6 @@
             android:layout_marginTop="16dp"
             android:text="Email will be displayed here"
             android:textColor="@color/black"
-            android:textColorHighlight="@color/black"
-            android:textColorHint="@color/black"
-            android:textColorLink="@color/black"
             android:textSize="18sp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -49,15 +45,66 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="32dp"
             android:backgroundTint="@color/btnActive"
-            android:text="Logout"
+            android:text="@string/logOutBtn"
             android:textColor="@color/white"
-            android:textColorHighlight="@color/white"
-            android:textColorHint="@color/white"
-            android:textColorLink="@color/white"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/userEmailTextView" />
 
+        <View
+            android:id="@+id/divider"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_marginTop="16dp"
+            android:background="?android:attr/listDivider"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/logoutButton" />
+
+        <Button
+            android:id="@+id/editProfile"
+            android:layout_width="0dp"
+            android:layout_height="58dp"
+            android:layout_marginTop="44dp"
+            android:backgroundTint="@color/btnActive"
+            android:text="@string/editProfile"
+            android:textColor="@color/white"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/divider" />
+
+        <Button
+            android:id="@+id/viewMyRecipes"
+            android:layout_width="0dp"
+            android:layout_height="58dp"
+            android:layout_marginTop="36dp"
+            android:backgroundTint="@color/btnActive"
+            android:text="@string/myRecipeBtn"
+            android:textColor="@color/white"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/editProfile" />
+
+        <Button
+            android:id="@+id/resetPassword"
+            android:layout_width="0dp"
+            android:layout_height="58dp"
+            android:layout_marginTop="36dp"
+            android:backgroundTint="@color/btnActive"
+            android:text="@string/resetPwdBtn"
+            android:textColor="@color/white"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/viewMyRecipes" />
+
     </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <!-- Fragment container for loading other fragments -->
+    <FrameLayout
+        android:id="@+id/fragment_container"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="200dp"
+        android:background="@color/white" />
 
 </FrameLayout>
