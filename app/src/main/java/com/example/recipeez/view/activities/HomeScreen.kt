@@ -9,6 +9,7 @@ import android.widget.Button
 import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.LinearLayout
+import android.widget.TextView
 import android.widget.Toast
 import com.bumptech.glide.Glide
 import com.example.recipeez.R
@@ -129,28 +130,50 @@ class HomeScreen : AppCompatActivity() {
     }
 
     private fun loadBannerRecipes(imageUrl: String?, recipeId: String?) {
-        imageUrl?.let {
-            // Load the image into the todayRecipeImage (the banner image)
-            Glide.with(this@HomeScreen)
-                .load(it)
-                .into(todayRecipeImage)
+        // Fetch the recipe title from the database using the recipeId
+        recipeId?.let {
+            recipesRef.child(it).addListenerForSingleValueEvent(object : ValueEventListener {
+                override fun onDataChange(snapshot: DataSnapshot) {
+                    val recipeTitle = snapshot.child("name").getValue(String::class.java) ?: "Untitled Recipe"
 
-            // Add click listener to the banner image
-            todayRecipeImage.setOnClickListener {
-                if (recipeId != null) {
-                    val intent = Intent(this@HomeScreen, RecipieScreen::class.java)
-                    intent.putExtra("RECIPE_ID", recipeId)  // Pass the recipe ID to the RecipeScreen
-                    startActivity(intent)
-                    Toast.makeText(this, "Recipe ID: $recipeId", Toast.LENGTH_SHORT).show()
-                } else {
-                    Toast.makeText(this@HomeScreen, "Recipe ID not found", Toast.LENGTH_SHORT).show()
+                    // Load the image into the todayRecipeImage (the banner image)
+                    imageUrl?.let { url ->
+                        Glide.with(this@HomeScreen)
+                            .load(url)
+                            .into(todayRecipeImage)
+                    } ?: run {
+                        Toast.makeText(this@HomeScreen, "No banner image available", Toast.LENGTH_SHORT).show()
+                    }
+
+                    // Add click listener to the banner image
+                    todayRecipeImage.setOnClickListener {
+                        if (recipeId != null) {
+                            val intent = Intent(this@HomeScreen, RecipieScreen::class.java)
+                            intent.putExtra("RECIPE_ID", recipeId)  // Pass the recipe ID to the RecipeScreen
+                            startActivity(intent)
+                            Toast.makeText(this@HomeScreen, "Recipe ID: $recipeId", Toast.LENGTH_SHORT).show()
+                        } else {
+                            Toast.makeText(this@HomeScreen, "Recipe ID not found", Toast.LENGTH_SHORT).show()
+                        }
+                    }
+
+                    // Create a TextView for the recipe title
+                    val titleTextView = findViewById<TextView>(R.id.banner_recipe_title)
+                    titleTextView.text = recipeTitle
+                    titleTextView.textSize = 20f
+                    titleTextView.setTextColor(Color.BLACK)
+                    titleTextView.textAlignment = TextView.TEXT_ALIGNMENT_CENTER
                 }
-            }
 
+                override fun onCancelled(error: DatabaseError) {
+                    Toast.makeText(this@HomeScreen, "Failed to load banner recipe title", Toast.LENGTH_SHORT).show()
+                }
+            })
         } ?: run {
-            Toast.makeText(this@HomeScreen, "No banner image available", Toast.LENGTH_SHORT).show()
+            Toast.makeText(this@HomeScreen, "Recipe ID not available for banner", Toast.LENGTH_SHORT).show()
         }
     }
+
 
 
     private fun loadLatestRecipes(latestRecipes: List<DataSnapshot>, foodType: String) {
@@ -160,8 +183,16 @@ class HomeScreen : AppCompatActivity() {
             val imageUrl = recipeSnapshot.child("imageUrl").getValue(String::class.java)
             val recipeId = recipeSnapshot.key  // Assuming you have a unique ID for each recipe
             val vegPreference = recipeSnapshot.child("foodType").getValue(String::class.java) ?: ""
+            val recipeTitle = recipeSnapshot.child("name").getValue(String::class.java) ?: "Untitled Recipe"
 
             if (vegPreference == foodType || foodType.isEmpty()) {
+                val recipeContainer = LinearLayout(this@HomeScreen)
+                recipeContainer.orientation = LinearLayout.VERTICAL
+                recipeContainer.layoutParams = LinearLayout.LayoutParams(
+                    LinearLayout.LayoutParams.WRAP_CONTENT,
+                    LinearLayout.LayoutParams.WRAP_CONTENT
+                ).apply { setMargins(8, 0, 8, 0) }
+
                 val imageButton = ImageButton(this@HomeScreen)
                 val params = LinearLayout.LayoutParams(250, 250).apply { setMargins(8, 0, 8, 0) }
                 imageButton.layoutParams = params
@@ -170,7 +201,8 @@ class HomeScreen : AppCompatActivity() {
                 Glide.with(this@HomeScreen)
                     .load(imageUrl)
                     .into(imageButton)
-// Add click listener to the ImageButton
+
+                // Add click listener to the ImageButton
                 imageButton.setOnClickListener {
                     if (recipeId != null) {
                         val intent = Intent(this@HomeScreen, RecipieScreen::class.java)
@@ -179,10 +211,25 @@ class HomeScreen : AppCompatActivity() {
                         Toast.makeText(this, "Recipe ID: $recipeId", Toast.LENGTH_SHORT).show()
                     }
                 }
-                latestRecipesContainer.addView(imageButton)
+
+                // Create a TextView for the recipe title
+                val titleTextView = TextView(this@HomeScreen).apply {
+                    text = recipeTitle
+                    textSize = 16f
+                    setTextColor(Color.BLACK)
+                    textAlignment = TextView.TEXT_ALIGNMENT_CENTER
+                }
+
+                // Add the ImageButton and TextView to the container
+                recipeContainer.addView(imageButton)
+                recipeContainer.addView(titleTextView)
+
+                // Add the container to the main layout
+                latestRecipesContainer.addView(recipeContainer)
             }
         }
     }
+
 
     private fun setButtonStyle(activeButton: Button, inactiveButton: Button) {
         activeButton.setBackgroundColor(Color.parseColor("#2F5233"))
