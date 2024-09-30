@@ -7,6 +7,46 @@
     android:background="#f5f5f5"
     tools:context=".view.activities.HomeScreen">
 
+    <!-- Top Bar with Add Recipe Button -->
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="16dp">
+
+        <!-- Search Recipe Button -->
+        <Button
+            android:id="@+id/search_recipe_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Search Recipe"
+            android:textSize="16sp"
+            android:textColor="#FFF"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentLeft="true"
+            android:layout_gravity="start"
+            android:layout_marginStart="8dp"
+            android:backgroundTint="@color/green"
+            />
+
+        <!-- Add Recipe Button -->
+        <Button
+            android:id="@+id/add_recipe_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Add Recipe"
+            android:textSize="16sp"
+            android:textColor="#FFF"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentRight="true"
+            android:layout_gravity="end"
+            android:layout_marginEnd="8dp"
+            android:backgroundTint="@color/green"
+            />
+
+
+
+    </RelativeLayout>
+
     <!-- Editor's Choice and For You section -->
     <LinearLayout
         android:layout_width="match_parent"
@@ -22,9 +62,11 @@
             android:layout_height="wrap_content"
             android:text="Editor's Choice"
             android:textSize="18sp"
-            android:textColor="#000"
+            android:textColor="#FFFF"
             android:paddingEnd="32dp"
-            android:gravity="center" />
+            android:gravity="center"
+            android:backgroundTint="@color/green"
+            />
 
         <!-- Button for For You -->
         <Button
@@ -34,6 +76,7 @@
             android:text="For You"
             android:textSize="18sp"
             android:textColor="#000"
+            android:backgroundTint="@color/white"
             android:gravity="center" />
     </LinearLayout>
 

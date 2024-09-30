@@ -1,9 +1,11 @@
 package com.example.recipeez.view.activities
 
+import android.annotation.SuppressLint
 import android.content.Intent
 import android.os.Bundle
 import android.view.Gravity
 import android.view.ViewGroup
+import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
@@ -25,7 +27,9 @@ class searchScreen : AppCompatActivity() {
     private lateinit var database: DatabaseReference
     private lateinit var linearLayoutRecipes: LinearLayout
     private lateinit var searchView: SearchView
+    private lateinit var backButton: ImageButton
     private var recipeDataList = ArrayList<Triple<String, String, String>>() // Store all recipes
+    @SuppressLint("MissingInflatedId")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
@@ -35,6 +39,13 @@ class searchScreen : AppCompatActivity() {
         // Initialize the LinearLayout by finding it by its ID
         linearLayoutRecipes = findViewById(R.id.linearLayoutRecipes)
         searchView = findViewById(R.id.searchView)
+        backButton = findViewById(R.id.backButton)
+
+        backButton.setOnClickListener {
+            val intent = Intent(this, HomeScreen::class.java)
+            startActivity(intent)
+            finish()
+        }
 
         // Fetch recipes from Firebase and display them
         fetchRecipes()

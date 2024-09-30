@@ -30,6 +30,8 @@ class HomeScreen : AppCompatActivity() {
     private lateinit var recipesRef: DatabaseReference
     private lateinit var editorsChoice: Button
     private lateinit var forYou: Button
+    private lateinit var addRecipe: Button
+    private lateinit var searchRecipe: Button
 
     @SuppressLint("MissingInflatedId")
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -40,6 +42,8 @@ class HomeScreen : AppCompatActivity() {
         latestRecipesContainer = findViewById(R.id.latest_recipes_container)
         editorsChoice = findViewById(R.id.editors_choice_button)
         forYou = findViewById(R.id.for_you_button)
+        addRecipe = findViewById(R.id.add_recipe_button)
+        searchRecipe = findViewById(R.id.search_recipe_button)
 
         firebaseAuth = FirebaseAuth.getInstance()
         databaseReference = FirebaseDatabase.getInstance().reference
@@ -72,6 +76,16 @@ class HomeScreen : AppCompatActivity() {
         editorsChoice.setOnClickListener {
             setButtonStyle(editorsChoice, forYou)
             loadUserPreferences(forYouSelected = false)
+        }
+        addRecipe.setOnClickListener{
+            val intent = Intent(this, Addrecipie::class.java)
+            startActivity(intent)
+            finish()
+        }
+        searchRecipe.setOnClickListener{
+            val intent = Intent(this, SaveScreen::class.java)
+            startActivity(intent)
+            finish()
         }
     }
 

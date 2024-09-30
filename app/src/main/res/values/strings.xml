@@ -90,5 +90,20 @@
         <item>500 grams</item>
         <item>1 kg</item>
     </string-array>
+    <string-array name="cuisine_array">
+        <item>Sort by cuisine</item>
+        <item>Sri Lankan</item>
+        <item>Indian</item>
+        <item>Chinese</item>
+        <item>Italian</item>
+        <item>Mexican</item>
+        <item>Japanese</item>
+        <item>Other</item>
+        <!-- Add more cuisines as needed -->
+    </string-array>
 
+    <string-array name="veg_nonveg_array">
+        <item>Non veg</item>
+        <item>Veg</item>
+    </string-array>
 </resources>

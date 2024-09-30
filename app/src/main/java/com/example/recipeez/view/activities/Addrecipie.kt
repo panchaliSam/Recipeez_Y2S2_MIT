@@ -1,6 +1,8 @@
 package com.example.recipeez.view.activities
 
 import android.annotation.SuppressLint
+import android.app.Activity
+import android.app.TimePickerDialog
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
@@ -10,9 +12,13 @@ import com.example.recipeez.R
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.storage.FirebaseStorage
+import java.util.Calendar
 
 class Addrecipie : AppCompatActivity() {
-
+    private var imageUrl: String? = null
+    private var videoUrl: String? = null
+    private var imageUri: Uri? = null
+    private var videoUri: Uri? = null
     // Declare views
     private lateinit var recipeName: EditText
     private lateinit var description: EditText
@@ -21,16 +27,16 @@ class Addrecipie : AppCompatActivity() {
     private lateinit var ingredientsDropdown: Spinner
     private lateinit var quantityDropdown: Spinner
     private lateinit var steps: EditText
-    private lateinit var preparationTime: EditText
-    private lateinit var cookingTime: EditText
-    private lateinit var totalTime: EditText
     private lateinit var submitButton: Button
     private lateinit var selectImageButton: Button
+    private lateinit var selectVideoButton: Button
     private lateinit var imagePreview: ImageView
+    private lateinit var videoPreview: ImageView
     private lateinit var dynamicIngredientsContainer: LinearLayout
     private lateinit var addButton: Button
     private lateinit var dynamicStepsContainer: LinearLayout
     private lateinit var addStepsButton: Button
+    private lateinit var backButton: ImageButton
 
     // Firebase authentication and database references
     private lateinit var firebaseAuth: FirebaseAuth
@@ -39,10 +45,13 @@ class Addrecipie : AppCompatActivity() {
     private val storage = FirebaseStorage.getInstance()
     private val storageRef = storage.reference
 
-    private var imageUri: Uri? = null
     private val PICK_IMAGE_REQUEST = 1
 
-    private var stepCounter = 1
+    private var stepCounter = 2
+
+    // Variables to store preparation and cooking time
+    private var preparationTime: Pair<Int, Int>? = null
+    private var cookingTime: Pair<Int, Int>? = null
 
     @SuppressLint("MissingInflatedId")
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -57,21 +66,35 @@ class Addrecipie : AppCompatActivity() {
         ingredientsDropdown = findViewById(R.id.ingredientsDropdown)
         quantityDropdown = findViewById(R.id.quantityDropdown)
         steps = findViewById(R.id.steps)
-        preparationTime = findViewById(R.id.preparation_time)
-        cookingTime = findViewById(R.id.cooking_time)
-        totalTime = findViewById(R.id.total_time)
         submitButton = findViewById(R.id.submit_button)
         selectImageButton = findViewById(R.id.imageButton)
+        selectVideoButton = findViewById(R.id.videoButton)
         imagePreview = findViewById(R.id.image_preview)
         dynamicIngredientsContainer = findViewById(R.id.dynamic_ingredients_container)
         addButton = findViewById(R.id.add_button)
         dynamicStepsContainer = findViewById(R.id.dynamic_steps_container)
         addStepsButton = findViewById(R.id.add_steps)
+        backButton = findViewById(R.id.backButton)
 
         // Initialize FirebaseAuth
         firebaseAuth = FirebaseAuth.getInstance()
+        submitButton.setOnClickListener {
+            uploadMediaAndSaveRecipe()
+        }
+
+        // Choose Image
         selectImageButton.setOnClickListener {
-            openImageChooser()
+            selectImage()
+        }
+
+        // Choose Video
+        selectVideoButton.setOnClickListener {
+            selectVideo()
+        }
+        backButton.setOnClickListener {
+            val intent = Intent(this, HomeScreen::class.java)
+            startActivity(intent)
+            finish()
         }
 
         // Set up click listener for the add button to add new ingredient and quantity spinners
@@ -81,16 +104,35 @@ class Addrecipie : AppCompatActivity() {
         addStepsButton.setOnClickListener {
             addStepsFields()
         }
-        // Set up click listener for the submit button
-        submitButton.setOnClickListener {
-            if (imageUri != null) {
-                uploadImageAndSaveRecipe()
-            } else {
-                saveRecipeToDatabase(null)
+        val preparationTimeButton: Button = findViewById(R.id.button_preparation_time)
+        val cookingTimeButton: Button = findViewById(R.id.button_cooking_time)
+
+        // Open TimePickerDialog for preparation time
+        preparationTimeButton.setOnClickListener {
+            showTimePickerDialog { hours, minutes ->
+                preparationTime = Pair(hours, minutes)
+                preparationTimeButton.text = "Preparation Time: $hours hr $minutes min"
             }
         }
-    }
 
+        // Open TimePickerDialog for cooking time
+        cookingTimeButton.setOnClickListener {
+            showTimePickerDialog { hours, minutes ->
+                cookingTime = Pair(hours, minutes)
+                cookingTimeButton.text = "Cooking Time: $hours hr $minutes min"
+            }
+        }
+
+    }
+    private fun showTimePickerDialog(onTimeSelected: (Int, Int) -> Unit) {
+        val calendar = Calendar.getInstance()
+        val currentHour = calendar.get(Calendar.HOUR_OF_DAY)
+        val currentMinute = calendar.get(Calendar.MINUTE)
+
+        TimePickerDialog(this, { _, hourOfDay, minute ->
+            onTimeSelected(hourOfDay, minute)
+        }, currentHour, currentMinute, true).show()
+    }
     private fun addStepsFields() {
         // Create a new EditText for the step
         val newStepEditText = EditText(this)
@@ -150,37 +192,80 @@ class Addrecipie : AppCompatActivity() {
     }
 
 
-    private fun openImageChooser() {
-        val intent = Intent()
+    // Function to handle image selection
+    private fun selectImage() {
+        val intent = Intent(Intent.ACTION_PICK)
         intent.type = "image/*"
-        intent.action = Intent.ACTION_GET_CONTENT
-        startActivityForResult(Intent.createChooser(intent, "Select Image"), PICK_IMAGE_REQUEST)
+        startActivityForResult(intent, IMAGE_PICK_CODE)
+    }
+
+    // Function to handle video selection
+    private fun selectVideo() {
+        val intent = Intent(Intent.ACTION_PICK)
+        intent.type = "video/*"
+        startActivityForResult(intent, VIDEO_PICK_CODE)
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-        if (requestCode == PICK_IMAGE_REQUEST && resultCode == RESULT_OK && data != null && data.data != null) {
-            imageUri = data.data
-            imagePreview.setImageURI(imageUri)
-        }
-    }
-
-    private fun uploadImageAndSaveRecipe() {
-        if (imageUri != null) {
-            val imageRef = storageRef.child("images/${imageUri!!.lastPathSegment}")
-            val uploadTask = imageRef.putFile(imageUri!!)
-
-            uploadTask.addOnSuccessListener { taskSnapshot ->
-                taskSnapshot.metadata?.reference?.downloadUrl?.addOnSuccessListener { uri ->
-                    saveRecipeToDatabase(uri.toString())
+        if (resultCode == Activity.RESULT_OK && data != null) {
+            when (requestCode) {
+                IMAGE_PICK_CODE -> {
+                    imageUri = data.data
+                    Toast.makeText(this, "Image selected", Toast.LENGTH_SHORT).show()
                 }
-            }.addOnFailureListener {
-                Toast.makeText(this, "Image upload failed", Toast.LENGTH_SHORT).show()
+                VIDEO_PICK_CODE -> {
+                    videoUri = data.data
+                    Toast.makeText(this, "Video selected", Toast.LENGTH_SHORT).show()
+                }
             }
         }
     }
 
-    private fun saveRecipeToDatabase(imageUrl: String?) {
+    // This function is triggered when the submit button is clicked
+    private fun uploadMediaAndSaveRecipe() {
+        if (imageUri != null) {
+            // Upload image first
+            uploadMedia(imageUri!!, "images") { url ->
+                imageUrl = url
+                // After image upload, check if video needs to be uploaded
+                if (videoUri != null) {
+                    uploadMedia(videoUri!!, "videos") { url ->
+                        videoUrl = url
+                        saveRecipeToDatabase()
+                    }
+                } else {
+                    saveRecipeToDatabase() // No video, so save after image
+                }
+            }
+        } else if (videoUri != null) {
+            // Only upload video if there's no image
+            uploadMedia(videoUri!!, "videos") { url ->
+                videoUrl = url
+                saveRecipeToDatabase() // Save after video upload
+            }
+        } else {
+            // No media, just save the recipe
+            saveRecipeToDatabase()
+        }
+    }
+
+    // Media upload function
+    private fun uploadMedia(uri: Uri, folder: String, onSuccess: (String?) -> Unit) {
+        val mediaRef = storageRef.child("$folder/${uri.lastPathSegment}")
+        val uploadTask = mediaRef.putFile(uri)
+
+        uploadTask.addOnSuccessListener { taskSnapshot ->
+            taskSnapshot.metadata?.reference?.downloadUrl?.addOnSuccessListener { uri ->
+                onSuccess(uri.toString())
+            }
+        }.addOnFailureListener {
+            Toast.makeText(this, "$folder upload failed", Toast.LENGTH_SHORT).show()
+            onSuccess(null) // Handle failure by returning null
+        }
+    }
+
+    private fun saveRecipeToDatabase() {
         // Check if the user is authenticated
         val user = firebaseAuth.currentUser
         if (user == null) {
@@ -193,9 +278,7 @@ class Addrecipie : AppCompatActivity() {
         val desc = description.text.toString().trim()
         val cuisine = cuisineDropdown.selectedItem.toString()
         val foodType = foodTypeDropdown.selectedItem.toString()
-        val prepTime = preparationTime.text.toString().trim()
-        val cookTime = cookingTime.text.toString().trim()
-        val totalTimeValue = totalTime.text.toString().trim()
+//        val totalTimeValue = totalTime.text.toString().trim()
 
         // Initialize lists for ingredients, quantities, and steps
         val ingredientsList = mutableListOf<String>()
@@ -224,8 +307,7 @@ class Addrecipie : AppCompatActivity() {
         }
 
         // Check if any required field is empty
-        if (name.isEmpty() || desc.isEmpty() || stepsList.isEmpty() ||
-            prepTime.isEmpty() || cookTime.isEmpty() || totalTimeValue.isEmpty()) {
+        if (name.isEmpty() || desc.isEmpty() || stepsList.isEmpty()) {
             Toast.makeText(this, "Please fill all fields", Toast.LENGTH_SHORT).show()
             return
         }
@@ -233,6 +315,15 @@ class Addrecipie : AppCompatActivity() {
         // Create a unique ID for the recipe entry
         val recipeId = recipesRef.push().key
 
+        // Extract preparation and cooking times
+        val prepHours = preparationTime?.first ?: 0
+        val prepMinutes = preparationTime?.second ?: 0
+        val cookHours = cookingTime?.first ?: 0
+        val cookMinutes = cookingTime?.second ?: 0
+
+        // Calculate total hours and minutes
+        val totalHours = prepHours + cookHours + (prepMinutes + cookMinutes) / 60
+        val totalMinutes = (prepMinutes + cookMinutes) % 60
         // Create a map for the recipe data
         val recipeData = hashMapOf(
             "name" to name,
@@ -241,11 +332,12 @@ class Addrecipie : AppCompatActivity() {
             "foodType" to foodType,
             "ingredientsList" to ingredientsList, // Store the list of all ingredients
             "quantityList" to quantityList,       // Store the list of all quantities
-            "stepsList" to stepsList,             // Store the list of all steps
-            "preparationTime" to prepTime,
-            "cookingTime" to cookTime,
-            "totalTime" to totalTimeValue,
+            "stepsList" to stepsList,
+            "preparationTime" to "${prepHours}h ${prepMinutes}m", // Include preparation time
+            "cookingTime" to "${cookHours}h ${cookMinutes}m",     // Include cooking time
+            "totalTime" to "${totalHours}h ${totalMinutes}m",      // Total time calculation
             "imageUrl" to imageUrl,
+            "videoUrl" to videoUrl,
             "userId" to user.uid
         )
 
@@ -268,14 +360,26 @@ class Addrecipie : AppCompatActivity() {
         recipeName.text.clear()
         description.text.clear()
         steps.text.clear()
-        preparationTime.text.clear()
-        cookingTime.text.clear()
-        totalTime.text.clear()
+        // Reset preparation and cooking time buttons
+        val preparationTimeButton: Button = findViewById(R.id.button_preparation_time)
+        val cookingTimeButton: Button = findViewById(R.id.button_cooking_time)
+
+        // Reset the text for these buttons
+        preparationTimeButton.text = "Set Preparation Time"
+        cookingTimeButton.text = "Set Cooking Time"
+
+        // Optionally reset preparationTime and cookingTime variables to null
+        preparationTime = null
+        cookingTime = null
+//        totalTime.text.clear()
         imagePreview.setImageResource(R.drawable.uploadimage) // Reset image preview
         imageUri = null
         dynamicIngredientsContainer.removeAllViews()
         dynamicStepsContainer.removeAllViews()
     }
 
-
+    companion object {
+        private const val IMAGE_PICK_CODE = 1000
+        private const val VIDEO_PICK_CODE = 1001
+    }
 }

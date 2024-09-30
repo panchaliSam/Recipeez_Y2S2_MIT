@@ -6,7 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".view.activities.Addrecipie">
-
+    <!-- Toolbar with Back Button -->
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -48,7 +48,21 @@
                     android:layout_height="wrap_content"
                     android:layout_marginStart="16dp"
                     android:text="Edit Profile"
-                    android:textColor="#FFFFFF" />
+                    android:textColor="#FFFFFF"
+                    android:backgroundTint="#007BFF"
+                    />
+
+
+                <ImageButton
+                    android:id="@+id/backButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="start"
+                    android:background="@null"
+                    android:contentDescription="Back"
+                    android:padding="8dp"
+                    android:src="@drawable/arrowleft"
+                    tools:ignore="MissingConstraints" />
             </LinearLayout>
 
             <!-- Form Fields -->
@@ -95,6 +109,7 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
+                    android:backgroundTint="#007BFF"
                     android:entries="@array/cuisine_options_array"
                     android:spinnerMode="dropdown" />
 
@@ -119,6 +134,7 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
+                    android:backgroundTint="#007BFF"
                     android:entries="@array/ingredient_options_array"
                     android:hint="Ingredients"
                     android:spinnerMode="dropdown" />
@@ -148,7 +164,9 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:text="Add Ingredient"
-                android:textColor="#FFFFFF" />
+                android:textColor="#FFFFFF"
+                android:backgroundTint="@color/green"
+                />
 
             <EditText
                 android:id="@+id/steps"
@@ -174,40 +192,34 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:text="Add Steps"
-                android:textColor="#FFFFFF" />
+                android:textColor="#FFFFFF"
+                android:backgroundTint="@color/green"
+                />
 
-            <EditText
-                android:id="@+id/preparation_time"
+            <!-- Replace EditText with Buttons for TimePickerDialog -->
+            <Button
+                android:id="@+id/button_preparation_time"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="8dp"
-                android:hint="Meal Preparation Time"
-                android:inputType="text"
+                android:text="Select Preparation Time"
                 android:padding="12dp"
-                android:textColor="@color/black"
-                android:textColorHint="@color/hintColor" />
+                android:textColor="@color/white"
+                android:textColorHint="@color/hintColor"
+                android:backgroundTint="@color/green"
+                />
 
-            <EditText
-                android:id="@+id/cooking_time"
+            <Button
+                android:id="@+id/button_cooking_time"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="8dp"
-                android:hint="Meal Cooking Time"
-                android:inputType="text"
+                android:text="Select Cooking Time"
                 android:padding="12dp"
-                android:textColor="@color/black"
-                android:textColorHint="@color/hintColor" />
-
-            <EditText
-                android:id="@+id/total_time"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="16dp"
-                android:hint="Total Time"
-                android:inputType="text"
-                android:padding="12dp"
-                android:textColor="@color/black"
-                android:textColorHint="@color/hintColor" />
+                android:textColor="@color/white"
+                android:textColorHint="@color/hintColor"
+                android:backgroundTint="@color/green"
+                />
 
             <!-- Upload Photos Section -->
             <TextView
@@ -231,8 +243,43 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
-                android:text="Upload Image" />
+                android:text="Upload Image"
+                android:backgroundTint="@color/green"
+                />
+            <!-- Upload Video Section -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="8dp"
+                android:text="Upload Video"
+                android:textColor="#000000" />
+            <!-- ImageView for Video Placeholder -->
+            <ImageView
+                android:id="@+id/video_placeholder"
+                android:layout_width="60dp"
+                android:layout_height="60dp"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginBottom="16dp"
+                android:contentDescription="Upload Video"
+                android:src="@drawable/uploadimage" />
+            <!-- Video Preview Section -->
+            <VideoView
+                android:id="@+id/video_preview"
+                android:layout_width="200dp"
+                android:layout_height="200dp"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginBottom="16dp"
+                android:contentDescription="Upload Video"
+                android:visibility="gone"
+                android:background="@android:color/darker_gray" />
 
+            <Button
+                android:id="@+id/videoButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:text="Upload Video"
+                android:backgroundTint="@color/green" />
             <!-- Submit Button -->
             <Button
                 android:id="@+id/submit_button"
@@ -240,7 +287,9 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="end|bottom"
                 android:text="Submit"
-                android:textColor="#FFFFFF" />
+                android:textColor="#FFFFFF"
+                android:backgroundTint="@color/green"
+                />
         </LinearLayout>
     </ScrollView>
 </androidx.constraintlayout.widget.ConstraintLayout>

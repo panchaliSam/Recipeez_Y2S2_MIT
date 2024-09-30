@@ -58,7 +58,7 @@ class RegisterAccount : AppCompatActivity() {
                                     .addOnCompleteListener { dbTask ->
                                         if (dbTask.isSuccessful) {
                                             // Redirect to QuestionnaireScreen
-                                            val intent = Intent(this, searchScreen::class.java)
+                                            val intent = Intent(this, HomeScreen::class.java)
                                             startActivity(intent)
                                             finish()
                                         } else {
