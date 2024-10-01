@@ -1,6 +1,7 @@
 package com.example.recipeez.view.activities
 
 import android.annotation.SuppressLint
+import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import android.util.Log
@@ -17,6 +18,7 @@ import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import androidx.core.view.children
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.example.recipeez.R
@@ -45,7 +47,7 @@ class RecipieScreen : AppCompatActivity() {
     private lateinit var ingredientsContainer: LinearLayout
     private lateinit var stepsContainer: LinearLayout
     private lateinit var tabs: TabLayout
-
+    private lateinit var shareButton: ImageView
 
 
     private var isLiked = false
@@ -69,7 +71,7 @@ class RecipieScreen : AppCompatActivity() {
         stepsContainer = findViewById(R.id.steps_container)
         likeButton = findViewById(R.id.like_button)
         saveButton = findViewById(R.id.save_button)
-
+        shareButton = findViewById(R.id.share_button)
         tabs = findViewById(R.id.tabs)
 
         // Set initial visibility
@@ -84,6 +86,7 @@ class RecipieScreen : AppCompatActivity() {
             if (isLiked) {
                 // Set the red filled heart when liked
                 likeButton.setImageResource(R.drawable.heart_filled)
+                recipeId?.let { id -> likeRecipeToUser(id) }
             } else {
                 // Set back the unfilled heart when unliked
                 likeButton.setImageResource(R.drawable.love)
@@ -100,6 +103,9 @@ class RecipieScreen : AppCompatActivity() {
             } else {
                 saveButton.setImageResource(R.drawable.save)
             }
+        }
+        shareButton.setOnClickListener {
+            shareRecipe()
         }
         // Setup TabSelectedListener
         tabs.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
@@ -139,11 +145,52 @@ class RecipieScreen : AppCompatActivity() {
 
         // Fetch and display the recipe data using the recipeId
         recipeId?.let {
+            checkIfRecipeIsSaved(recipeId)  // <-- Check if the recipe is saved
             getRecipeData(recipeId)
+            checkIfRecipeIsLiked(recipeId)
         }
 
     }
 
+    private fun shareRecipe() {
+        // Gather the recipe details
+        val recipeName = recipeTitle.text.toString()
+        val preparationTime = preparationTimeView.text.toString()
+        val totalTime = totalTimeView.text.toString()
+        val cookTime = cookTimeView.text.toString()
+
+        val ingredients = ingredientsContainer.children
+            .map { (it as TextView).text.toString() }
+            .joinToString(separator = "\n")
+
+        val steps = stepsContainer.children
+            .map { (it as TextView).text.toString() }
+            .joinToString(separator = "\n")
+
+        // Create the share message
+        val shareMessage = """
+        Recipe: $recipeName
+        Preparation Time: $preparationTime
+        Total Time: $totalTime
+        Cook Time: $cookTime
+
+        Ingredients:
+        $ingredients
+
+        Steps:
+        $steps
+    """.trimIndent()
+
+        // Create a share intent
+        val shareIntent = Intent().apply {
+            action = Intent.ACTION_SEND
+            putExtra(Intent.EXTRA_TEXT, shareMessage)
+            type = "text/plain"
+        }
+
+        // Start the share intent
+        startActivity(Intent.createChooser(shareIntent, "Share Recipe via"))
+    }
 
     fun getRecipeData(recipeId: String) {
         reciepeRef.child(recipeId).addListenerForSingleValueEvent(object : ValueEventListener {
@@ -209,6 +256,70 @@ class RecipieScreen : AppCompatActivity() {
 
             override fun onCancelled(error: DatabaseError) {
                 Log.e("SaveRecipeError", "Error: ${error.message}")
+            }
+        })
+    }
+
+    // Function to check if the recipe is already saved by the user
+    private fun checkIfRecipeIsSaved(recipeId: String) {
+        val userSavedRef = usersRef.child(userId).child("savedRecipes")
+        userSavedRef.addListenerForSingleValueEvent(object : ValueEventListener {
+            override fun onDataChange(snapshot: DataSnapshot) {
+                val savedRecipes = snapshot.getValue(object : GenericTypeIndicator<List<String>>() {})
+                val updatedRecipes = savedRecipes?.toMutableList() ?: mutableListOf()
+
+                if (updatedRecipes.contains(recipeId)) {
+                    isSaved = true
+                    saveButton.setImageResource(R.drawable.save_filled)  // Set the saved icon
+                }
+            }
+
+            override fun onCancelled(error: DatabaseError) {
+                Log.e("SaveCheckError", "Error: ${error.message}")
+            }
+        })
+    }
+
+    private fun likeRecipeToUser(recipeId: String) {
+        val userSavedRef = usersRef.child(userId).child("likedRecipes")
+
+        // Add the recipe ID to the user's saved recipes list
+        userSavedRef.addListenerForSingleValueEvent(object : ValueEventListener {
+            override fun onDataChange(snapshot: DataSnapshot) {
+                val likedRecipes = snapshot.getValue(object : GenericTypeIndicator<List<String>>() {})
+                val updatedRecipes = likedRecipes?.toMutableList() ?: mutableListOf()
+
+                if (!updatedRecipes.contains(recipeId)) {
+                    updatedRecipes.add(recipeId)
+                    userSavedRef.setValue(updatedRecipes)
+                    Toast.makeText(this@RecipieScreen, "Recipe added to wishlist", Toast.LENGTH_SHORT).show()
+                } else {
+                    Toast.makeText(this@RecipieScreen, "Recipe already added to wishlist", Toast.LENGTH_SHORT).show()
+                }
+            }
+
+            override fun onCancelled(error: DatabaseError) {
+                Log.e("LikeRecipeError", "Error: ${error.message}")
+            }
+        })
+    }
+
+    // Function to check if the recipe is already saved by the user
+    private fun checkIfRecipeIsLiked(recipeId: String) {
+        val userSavedRef = usersRef.child(userId).child("likedRecipes")
+        userSavedRef.addListenerForSingleValueEvent(object : ValueEventListener {
+            override fun onDataChange(snapshot: DataSnapshot) {
+                val likedRecipes = snapshot.getValue(object : GenericTypeIndicator<List<String>>() {})
+                val updatedRecipes = likedRecipes?.toMutableList() ?: mutableListOf()
+
+                if (updatedRecipes.contains(recipeId)) {
+                    isSaved = true
+                    likeButton.setImageResource(R.drawable.heart_filled)  // Set the saved icon
+                }
+            }
+
+            override fun onCancelled(error: DatabaseError) {
+                Log.e("SaveCheckError", "Error: ${error.message}")
             }
         })
     }
