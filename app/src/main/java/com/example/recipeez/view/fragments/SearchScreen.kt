@@ -1,55 +1,71 @@
 package com.example.recipeez.view.fragments
 
+import android.annotation.SuppressLint
 import android.content.Intent
 import android.os.Bundle
-import android.view.Gravity
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
+import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.LinearLayout
+import android.widget.TextView
 import android.widget.Toast
+import androidx.appcompat.widget.SearchView
 import androidx.fragment.app.Fragment
 import com.bumptech.glide.Glide
 import com.example.recipeez.R
+import com.example.recipeez.view.fragments.Home
+import com.example.recipeez.view.fragments.RecipeScreen
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
 
-private const val ARG_PARAM1 = "param1"
-private const val ARG_PARAM2 = "param2"
-
 class SearchScreen : Fragment() {
-    private var param1: String? = null
-    private var param2: String? = null
     private lateinit var database: DatabaseReference
     private lateinit var linearLayoutRecipes: LinearLayout
+    private lateinit var searchView: SearchView
+    private lateinit var backButton: ImageButton
+    private var recipeDataList = ArrayList<Triple<String, String, String>>() // Store all recipes
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        arguments?.let {
-            param1 = it.getString(ARG_PARAM1)
-            param2 = it.getString(ARG_PARAM2)
-        }
-        database = FirebaseDatabase.getInstance().getReference("recipes")
-    }
-
+    @SuppressLint("MissingInflatedId")
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        // Inflate the layout for this fragment
         val view = inflater.inflate(R.layout.fragment_search_screen, container, false)
 
-        // Initialize the LinearLayout where recipes will be displayed
+        // Initialize the LinearLayout by finding it by its ID
         linearLayoutRecipes = view.findViewById(R.id.linearLayoutRecipes)
+        searchView = view.findViewById(R.id.searchView)
+        backButton = view.findViewById(R.id.backButton)
+
+        backButton.setOnClickListener {
+            // Replace activity transition with fragment transition or navigation action
+            val intent = Intent(requireContext(), Home::class.java)
+            startActivity(intent)
+            requireActivity().finish()
+        }
+
+        // Initialize Firebase reference
+        database = FirebaseDatabase.getInstance().getReference("recipes")
 
         // Fetch recipes from Firebase and display them
         fetchRecipes()
 
-        // Return the view for the fragment
+        // Implement search functionality
+        searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
+            override fun onQueryTextSubmit(query: String?): Boolean {
+                query?.let { filterRecipes(it) }
+                return true
+            }
+
+            override fun onQueryTextChange(newText: String?): Boolean {
+                newText?.let { filterRecipes(it) }
+                return true
+            }
+        })
+
         return view
     }
 
@@ -60,12 +76,15 @@ class SearchScreen : Fragment() {
                     // Clear any previous views before adding new ones
                     linearLayoutRecipes.removeAllViews()
 
-                    val recipeDataList = ArrayList<Pair<String, String>>()
+                    // List to hold the image URLs fetched from Firebase
+                    recipeDataList.clear()  // Clear the list to avoid duplicates
 
+                    // Iterate over each recipe in the snapshot and get the "imageUrl" value
                     for (recipeSnapshot in snapshot.children) {
                         val imageUrl = recipeSnapshot.child("imageUrl").value.toString()
-                        val recipeId = recipeSnapshot.key.toString()
-                        recipeDataList.add(Pair(imageUrl, recipeId))
+                        val recipeId = recipeSnapshot.key.toString() // Get the unique ID of the recipe
+                        val recipeTitle = recipeSnapshot.child("name").value.toString() // Fetch the recipe title
+                        recipeDataList.add(Triple(imageUrl, recipeId, recipeTitle))
                     }
 
                     // Display the fetched images in rows of 3
@@ -79,7 +98,13 @@ class SearchScreen : Fragment() {
         })
     }
 
-    private fun displayRecipes(recipeDataList: List<Pair<String, String>>) {
+    private fun filterRecipes(query: String) {
+        linearLayoutRecipes.removeAllViews()
+        val filteredList = recipeDataList.filter { it.third.contains(query, ignoreCase = true) }
+        displayRecipes(filteredList)
+    }
+
+    private fun displayRecipes(recipeDataList: List<Triple<String, String, String>>) {
         var rowLayout: LinearLayout? = null
 
         for (i in recipeDataList.indices) {
@@ -95,38 +120,48 @@ class SearchScreen : Fragment() {
                 linearLayoutRecipes.addView(rowLayout)
             }
 
-            val imageView = ImageView(requireContext()).apply {
+            val recipeContainer = LinearLayout(requireContext()).apply {
+                orientation = LinearLayout.VERTICAL
                 layoutParams = LinearLayout.LayoutParams(
                     0, // Width set to 0, because weight will distribute space equally
-                    300 // Fixed height of 300 pixels for each image
+                    ViewGroup.LayoutParams.WRAP_CONTENT
                 ).apply {
-                    weight = 1f // Distribute the space equally between three images
-                    setMargins(8, 8, 8, 8) // Add margin around each image
+                    weight = 1f
+                    setMargins(8, 8, 8, 8)
                 }
+            }
+
+            val imageView = ImageView(requireContext()).apply {
+                layoutParams = LinearLayout.LayoutParams(
+                    ViewGroup.LayoutParams.MATCH_PARENT,
+                    300
+                )
                 scaleType = ImageView.ScaleType.CENTER_CROP
             }
 
-            val (imageUrl, recipeId) = recipeDataList[i]
-            Glide.with(this).load(imageUrl).into(imageView)
+            val (imageUrl, recipeId, recipeTitle) = recipeDataList[i]
 
-            // Set click listener on the ImageView
+            Glide.with(requireContext()).load(imageUrl).into(imageView)
+
             imageView.setOnClickListener {
                 val intent = Intent(requireContext(), RecipeScreen::class.java)
                 intent.putExtra("RECIPE_ID", recipeId)
                 startActivity(intent)
             }
 
-            rowLayout?.addView(imageView)
-        }
-    }
-
-    companion object {
-        fun newInstance(param1: String, param2: String) =
-            SearchScreen().apply {
-                arguments = Bundle().apply {
-                    putString(ARG_PARAM1, param1)
-                    putString(ARG_PARAM2, param2)
-                }
+            val textView = TextView(requireContext()).apply {
+                text = recipeTitle
+                gravity = Gravity.CENTER
+                layoutParams = LinearLayout.LayoutParams(
+                    ViewGroup.LayoutParams.MATCH_PARENT,
+                    ViewGroup.LayoutParams.WRAP_CONTENT
+                )
             }
+
+            recipeContainer.addView(imageView)
+            recipeContainer.addView(textView)
+
+            rowLayout?.addView(recipeContainer)
+        }
     }
 }

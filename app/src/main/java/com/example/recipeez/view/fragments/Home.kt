@@ -1,15 +1,13 @@
 package com.example.recipeez.view.fragments
 
 import android.annotation.SuppressLint
+import android.content.Intent
 import android.graphics.Color
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
-import android.widget.ImageView
-import android.widget.LinearLayout
-import android.widget.Toast
+import android.widget.*
 import androidx.fragment.app.Fragment
 import com.bumptech.glide.Glide
 import com.example.recipeez.R
@@ -26,73 +24,61 @@ class Home : Fragment() {
     private lateinit var editorsChoice: Button
     private lateinit var forYou: Button
 
-    // Loading state
-    private var isLoading = false
-
+    @SuppressLint("MissingInflatedId")
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
         val view = inflater.inflate(R.layout.fragment_home, container, false)
 
-        // Initialize Views
         todayRecipeImage = view.findViewById(R.id.today_recipe_image)
         latestRecipesContainer = view.findViewById(R.id.latest_recipes_container)
         editorsChoice = view.findViewById(R.id.editors_choice_button)
         forYou = view.findViewById(R.id.for_you_button)
 
-        // Initialize Firebase
         firebaseAuth = FirebaseAuth.getInstance()
         databaseReference = FirebaseDatabase.getInstance().reference
+        firebaseAuth.currentUser?.let {
+            userPreferencesRef = databaseReference.child("users").child(it.uid)
+            recipesRef = databaseReference.child("recipes")
+        } ?: run {
+            Toast.makeText(requireContext(), "User not authenticated", Toast.LENGTH_SHORT).show()
+            return view
+        }
 
-        // Authenticate user and set up Firebase references
-        setupFirebaseRefs()
-
-        // Set up button listeners
+        checkUserAuthentication()
         setupButtonListeners()
 
         return view
     }
 
-    private fun setupFirebaseRefs() {
+    private fun checkUserAuthentication() {
         firebaseAuth.currentUser?.let {
-            userPreferencesRef = databaseReference.child("users").child(it.uid)
-            recipesRef = databaseReference.child("recipes")
-            // Automatically load "For You" tab
-            loadUserPreferences(forYouSelected = true)
+            loadUserPreferences(forYouSelected = true) // Default to "For You" tab
         } ?: run {
-            Toast.makeText(context, "User not authenticated", Toast.LENGTH_SHORT).show()
+            Toast.makeText(requireContext(), "Please log in to view recipes", Toast.LENGTH_SHORT).show()
         }
     }
 
     private fun setupButtonListeners() {
         forYou.setOnClickListener {
-            if (!isLoading) {
-                setButtonStyle(forYou, editorsChoice)
-                loadUserPreferences(forYouSelected = true)
-            }
+            setButtonStyle(forYou, editorsChoice)
+            loadUserPreferences(forYouSelected = true)
         }
 
         editorsChoice.setOnClickListener {
-            if (!isLoading) {
-                setButtonStyle(editorsChoice, forYou)
-                loadUserPreferences(forYouSelected = false)
-            }
+            setButtonStyle(editorsChoice, forYou)
+            loadUserPreferences(forYouSelected = false)
         }
     }
 
-    // Updated to load preferences based on selected tab
     private fun loadUserPreferences(forYouSelected: Boolean) {
-        if (isLoading) return
-
         userPreferencesRef.addListenerForSingleValueEvent(object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
-                // Extract user preferences
                 val foodType = snapshot.child("foodType").getValue(String::class.java) ?: ""
                 val cuisinesList = snapshot.child("cuisines").children.mapNotNull { it.getValue(String::class.java) }
                 val cuisinePreference = cuisinesList.firstOrNull() ?: ""
 
-                // Based on tab selection, load recipes
                 if (forYouSelected) {
                     loadRecipes(foodType, cuisinePreference)
                 } else {
@@ -101,17 +87,12 @@ class Home : Fragment() {
             }
 
             override fun onCancelled(error: DatabaseError) {
-                Toast.makeText(context, "Failed to load preferences", Toast.LENGTH_SHORT).show()
+                Toast.makeText(requireContext(), "Failed to load preferences", Toast.LENGTH_SHORT).show()
             }
         })
     }
 
-    // Updated to optimize querying logic
     private fun loadRecipes(foodType: String = "", cuisinePreference: String = "") {
-        if (isLoading) return
-
-        isLoading = true // Start loading
-
         val query = if (foodType.isNotEmpty() && cuisinePreference.isNotEmpty()) {
             recipesRef.orderByChild("cuisine").equalTo(cuisinePreference)
         } else {
@@ -122,38 +103,71 @@ class Home : Fragment() {
             override fun onDataChange(snapshot: DataSnapshot) {
                 val recipesList = snapshot.children.toList()
 
-                // Display today's recipe as the banner
                 if (recipesList.isNotEmpty()) {
+                    // First recipe goes to loadBannerRecipes
                     val firstRecipe = recipesList.first()
                     val imageUrl = firstRecipe.child("imageUrl").getValue(String::class.java)
+                    val recipeId = firstRecipe.key // Get the recipe ID
                     val vegPreference = firstRecipe.child("foodType").getValue(String::class.java) ?: ""
 
                     if (vegPreference == foodType || foodType.isEmpty()) {
-                        loadBannerRecipes(imageUrl)
+                        loadBannerRecipes(imageUrl, recipeId)
                     }
 
-                    // Load the latest recipes excluding today's recipe
+                    // Rest of the recipes go to loadLatestRecipes
                     val latestRecipes = recipesList.drop(1)
                     loadLatestRecipes(latestRecipes, foodType)
                 }
-
-                isLoading = false // Stop loading
             }
 
             override fun onCancelled(error: DatabaseError) {
-                Toast.makeText(context, "Failed to load recipes", Toast.LENGTH_SHORT).show()
-                isLoading = false
+                Toast.makeText(requireContext(), "Failed to load recipes", Toast.LENGTH_SHORT).show()
             }
         })
     }
 
-    private fun loadBannerRecipes(imageUrl: String?) {
-        imageUrl?.let {
-            Glide.with(this@Home)
-                .load(it)
-                .into(todayRecipeImage)
+    private fun loadBannerRecipes(imageUrl: String?, recipeId: String?) {
+        // Fetch the recipe title from the database using the recipeId
+        recipeId?.let {
+            recipesRef.child(it).addListenerForSingleValueEvent(object : ValueEventListener {
+                override fun onDataChange(snapshot: DataSnapshot) {
+                    val recipeTitle = snapshot.child("name").getValue(String::class.java) ?: "Untitled Recipe"
+
+                    // Load the image into the todayRecipeImage (the banner image)
+                    imageUrl?.let { url ->
+                        Glide.with(requireContext())
+                            .load(url)
+                            .into(todayRecipeImage)
+                    } ?: run {
+                        Toast.makeText(requireContext(), "No banner image available", Toast.LENGTH_SHORT).show()
+                    }
+
+                    // Add click listener to the banner image
+                    todayRecipeImage.setOnClickListener {
+                        if (recipeId != null) {
+                            val intent = Intent(requireActivity(), RecipeScreen::class.java)
+                            intent.putExtra("RECIPE_ID", recipeId)  // Pass the recipe ID to the RecipeScreen
+                            startActivity(intent)
+                            Toast.makeText(requireContext(), "Recipe ID: $recipeId", Toast.LENGTH_SHORT).show()
+                        } else {
+                            Toast.makeText(requireContext(), "Recipe ID not found", Toast.LENGTH_SHORT).show()
+                        }
+                    }
+
+                    // Create a TextView for the recipe title
+                    val titleTextView = requireView().findViewById<TextView>(R.id.banner_recipe_title)
+                    titleTextView.text = recipeTitle
+                    titleTextView.textSize = 20f
+                    titleTextView.setTextColor(Color.BLACK)
+                    titleTextView.textAlignment = TextView.TEXT_ALIGNMENT_CENTER
+                }
+
+                override fun onCancelled(error: DatabaseError) {
+                    Toast.makeText(requireContext(), "Failed to load banner recipe title", Toast.LENGTH_SHORT).show()
+                }
+            })
         } ?: run {
-            Toast.makeText(context, "No banner image available", Toast.LENGTH_SHORT).show()
+            Toast.makeText(requireContext(), "Recipe ID not available for banner", Toast.LENGTH_SHORT).show()
         }
     }
 
@@ -162,28 +176,63 @@ class Home : Fragment() {
 
         latestRecipes.forEach { recipeSnapshot ->
             val imageUrl = recipeSnapshot.child("imageUrl").getValue(String::class.java)
+            val recipeId = recipeSnapshot.key
             val vegPreference = recipeSnapshot.child("foodType").getValue(String::class.java) ?: ""
+            val recipeTitle = recipeSnapshot.child("name").getValue(String::class.java) ?: "Untitled Recipe"
 
             if (vegPreference == foodType || foodType.isEmpty()) {
-                val imageView = ImageView(context)
+                val recipeContainer = LinearLayout(requireContext())
+                recipeContainer.orientation = LinearLayout.VERTICAL
+                recipeContainer.layoutParams = LinearLayout.LayoutParams(
+                    LinearLayout.LayoutParams.WRAP_CONTENT,
+                    LinearLayout.LayoutParams.WRAP_CONTENT
+                ).apply { setMargins(8, 0, 8, 0) }
+
+                val imageButton = ImageButton(requireContext())
                 val params = LinearLayout.LayoutParams(250, 250).apply { setMargins(8, 0, 8, 0) }
-                imageView.layoutParams = params
-                imageView.scaleType = ImageView.ScaleType.CENTER_CROP
+                imageButton.layoutParams = params
+                imageButton.scaleType = ImageView.ScaleType.CENTER_CROP
 
-                Glide.with(this@Home)
+                Glide.with(requireContext())
                     .load(imageUrl)
-                    .into(imageView)
+                    .into(imageButton)
 
-                latestRecipesContainer.addView(imageView)
+                // Add click listener to the ImageButton
+                imageButton.setOnClickListener {
+                    if (recipeId != null) {
+                        val intent = Intent(requireActivity(), RecipeScreen::class.java)
+                        intent.putExtra("RECIPE_ID", recipeId)  // Pass the recipe ID to the RecipeScreen
+                        startActivity(intent)
+                        Toast.makeText(requireContext(), "Recipe ID: $recipeId", Toast.LENGTH_SHORT).show()
+                    }
+                }
+
+                // Create a TextView for the recipe title
+                val titleTextView = TextView(requireContext()).apply {
+                    text = recipeTitle
+                    textSize = 16f
+                    setTextColor(Color.BLACK)
+                    textAlignment = TextView.TEXT_ALIGNMENT_CENTER
+                }
+
+                // Add the ImageButton and TextView to the container
+                recipeContainer.addView(imageButton)
+                recipeContainer.addView(titleTextView)
+
+                // Add the container to the main layout
+                latestRecipesContainer.addView(recipeContainer)
             }
         }
     }
 
-    // Button style toggle
     private fun setButtonStyle(activeButton: Button, inactiveButton: Button) {
-        activeButton.setBackgroundColor(Color.parseColor("#2F5233"))
-        activeButton.setTextColor(Color.WHITE)
-        inactiveButton.setBackgroundColor(Color.WHITE)
-        inactiveButton.setTextColor(Color.BLACK)
+        activeButton.apply {
+            setBackgroundColor(Color.parseColor("#FF3F6C"))
+            setTextColor(Color.WHITE)
+        }
+        inactiveButton.apply {
+            setBackgroundColor(Color.TRANSPARENT)
+            setTextColor(Color.parseColor("#FF3F6C"))
+        }
     }
 }

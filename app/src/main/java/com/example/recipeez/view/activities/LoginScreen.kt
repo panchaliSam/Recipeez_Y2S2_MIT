@@ -66,5 +66,21 @@ class LoginScreen : AppCompatActivity() {
             startActivity(loginBackIntent)
             finish() // Optionally finish the LoginScreen activity if you don't want to return to it
         }
+
+        // Handle "Forgot Password" click
+        binding.loginForgotPassword.setOnClickListener {
+            val email = binding.loginEmail.text.toString()
+            if (email.isNotEmpty()) {
+                firebaseAuth.sendPasswordResetEmail(email).addOnCompleteListener { task ->
+                    if (task.isSuccessful) {
+                        Toast.makeText(this, "Reset password email sent to $email", Toast.LENGTH_SHORT).show()
+                    } else {
+                        Toast.makeText(this, task.exception?.message ?: "Error sending reset email", Toast.LENGTH_SHORT).show()
+                    }
+                }
+            } else {
+                Toast.makeText(this, "Please enter your email", Toast.LENGTH_SHORT).show()
+            }
+        }
     }
 }
