@@ -1,10 +1,13 @@
 package com.example.recipeez.view.activities
 
+import android.content.Intent
 import android.os.Bundle
+import android.view.Gravity
 import android.view.View
 import android.widget.GridLayout
 import android.widget.ImageView
 import android.widget.LinearLayout
+import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
@@ -106,20 +109,29 @@ class SaveScreen : AppCompatActivity() {
                 }
             }
 
-            // Add up to 3 ImageViews to the rowLayout
+            // Add up to 3 ImageViews and TextViews to the rowLayout
             for (j in 0 until 3) {
                 if (i + j < recipeDataList.size) {
                     val (recipeId, recipeName, imageUrl) = recipeDataList[i + j]
 
+                    // Create a vertical layout to hold the image and the recipe name
+                    val verticalLayout = LinearLayout(this).apply {
+                        orientation = LinearLayout.VERTICAL
+                        layoutParams = LinearLayout.LayoutParams(
+                            0,  // Set width to 0 to use weight for equal distribution
+                            LinearLayout.LayoutParams.WRAP_CONTENT
+                        ).apply {
+                            weight = 1f // Each vertical layout takes equal weight
+                            setMargins(8, 8, 8, 8) // Margin between items
+                        }
+                    }
+
                     // Create ImageView for each recipe
                     val imageView = ImageView(this).apply {
                         layoutParams = LinearLayout.LayoutParams(
-                            0, // Set width to 0 to use weight for equal distribution
+                            LinearLayout.LayoutParams.MATCH_PARENT,
                             300 // Fixed height for the images
-                        ).apply {
-                            weight = 1f // Each ImageView takes equal weight
-                            setMargins(8, 8, 8, 8) // Margin between images
-                        }
+                        )
                         adjustViewBounds = true
                         scaleType = ImageView.ScaleType.CENTER_CROP
                     }
@@ -129,15 +141,29 @@ class SaveScreen : AppCompatActivity() {
                         .load(imageUrl)
                         .centerCrop()
                         .into(imageView)
-
-                    // Set click listener for the image
                     imageView.setOnClickListener {
-                        Toast.makeText(this, "Selected Recipe: $recipeName", Toast.LENGTH_SHORT).show()
-                        // Handle image click events, e.g., open recipe details
+                        // Create an Intent to open RecipeScreen
+                        val intent = Intent(this@SaveScreen, RecipieScreen::class.java)
+                        // Pass the recipeId to the RecipeScreen
+                        intent.putExtra("RECIPE_ID", recipeId)
+                        startActivity(intent)
+                    }
+                    // Create TextView for the recipe name
+                    val textView = TextView(this).apply {
+                        text = recipeName
+                        gravity = Gravity.CENTER
+                        layoutParams = LinearLayout.LayoutParams(
+                            LinearLayout.LayoutParams.MATCH_PARENT,
+                            LinearLayout.LayoutParams.WRAP_CONTENT
+                        )
                     }
 
-                    // Add the ImageView to the rowLayout
-                    rowLayout.addView(imageView)
+                    // Add ImageView and TextView to the vertical layout
+                    verticalLayout.addView(imageView)
+                    verticalLayout.addView(textView)
+
+                    // Add the vertical layout to the rowLayout
+                    rowLayout.addView(verticalLayout)
                 } else {
                     // Add empty space for missing items to keep 3 items per row
                     val emptyView = View(this).apply {
@@ -152,7 +178,7 @@ class SaveScreen : AppCompatActivity() {
                 }
             }
 
-            // Add the rowLayout to the recipeLinearLayout
+            // Add the rowLayout to the containerRecipe
             recipeLinearLayout.addView(rowLayout)
         }
     }

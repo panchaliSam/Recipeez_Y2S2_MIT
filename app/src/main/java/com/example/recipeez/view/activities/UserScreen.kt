@@ -1,9 +1,13 @@
 package com.example.recipeez.view.activities
 
+import android.content.Intent
 import android.os.Bundle
+import android.view.Gravity
 import android.view.View
+import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.LinearLayout
+import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
@@ -21,6 +25,7 @@ import com.google.firebase.database.ValueEventListener
 private lateinit var usersRef: DatabaseReference
 private lateinit var containerCookBook: LinearLayout
 private lateinit var containerRecipe: LinearLayout
+    private lateinit var cookBookLabel: TextView
 private lateinit var firebaseAuth: FirebaseAuth
 private lateinit var firebaseDatabase: FirebaseDatabase
 private lateinit var tabs: TabLayout
@@ -39,6 +44,7 @@ class UserScreen : AppCompatActivity() {
         containerCookBook = findViewById(R.id.containerCookBook)
 
         containerRecipe = findViewById(R.id.containerRecipe)
+        cookBookLabel = findViewById(R.id.cookBookLabel)
 
         tabs = findViewById(R.id.tabLayout)
 
@@ -145,11 +151,14 @@ class UserScreen : AppCompatActivity() {
             override fun onDataChange(dataSnapshot: DataSnapshot) {
                 // Iterate through the recipes
                 for (recipeSnapshot in dataSnapshot.children) {
+                    val recipeId = recipeSnapshot.value as? String ?: "Unknown RecipeId"
                     val imageUrl = recipeSnapshot.child("imageUrl").getValue(String::class.java)
-
+                    val recipeTitle =
+                        recipeSnapshot.child("name").value as? String
+                            ?: "Unknown Recipe"
                     // Check if imageUrl is not null, then display it
                     if (imageUrl != null) {
-                        displayRecipeImage(imageUrl)
+                        displayRecipeImage(imageUrl,recipeTitle,recipeId)
                     } else {
                         Toast.makeText(this@UserScreen, "No image URL found", Toast.LENGTH_SHORT)
                             .show()
@@ -167,32 +176,37 @@ class UserScreen : AppCompatActivity() {
         })
     }
 
-    // Function to dynamically create and display recipe images
-    private fun displayRecipeImage(imageUrl: String) {
+    private fun displayRecipeImage(imageUrl: String, recipeTitle: String,recipeId: String) {
         // Variable to keep track of current row
         var currentRowLayout: LinearLayout? = null
         var imageCounter = 0
+
         if (imageCounter % 3 == 0) {
             // Create a new horizontal LinearLayout for the row
             currentRowLayout = LinearLayout(this)
-            currentRowLayout!!.orientation = LinearLayout.HORIZONTAL
-
-            // Set layout parameters for the new row (match parent width, wrap content height)
-            currentRowLayout!!.layoutParams = LinearLayout.LayoutParams(
+            currentRowLayout.orientation = LinearLayout.HORIZONTAL
+            currentRowLayout.layoutParams = LinearLayout.LayoutParams(
                 LinearLayout.LayoutParams.MATCH_PARENT,
                 LinearLayout.LayoutParams.WRAP_CONTENT
             )
-
             // Add the new row to the containerCookBook
             containerCookBook.addView(currentRowLayout)
         }
 
+        // Create a vertical LinearLayout to hold ImageView and TextView
+        val verticalLayout = LinearLayout(this)
+        verticalLayout.orientation = LinearLayout.VERTICAL
+        verticalLayout.layoutParams = LinearLayout.LayoutParams(
+            0,  // Width is set to 0 because weight will be used to divide space equally
+            LinearLayout.LayoutParams.WRAP_CONTENT,  // Height is wrap content for vertical layout
+            1f  // Weight of 1 to equally distribute the images in a row
+        )
+
         // Create ImageView dynamically
         val imageView = ImageView(this)
         imageView.layoutParams = LinearLayout.LayoutParams(
-            0,  // Width is set to 0 because weight will be used to divide space equally
-            300,  // Height can be adjusted based on your design
-            1f  // Weight of 1 to equally distribute the images in a row
+            LinearLayout.LayoutParams.MATCH_PARENT,
+            300  // Height can be adjusted based on your design
         )
         imageView.scaleType = ImageView.ScaleType.CENTER_CROP
 
@@ -200,13 +214,33 @@ class UserScreen : AppCompatActivity() {
         Glide.with(this)
             .load(imageUrl)
             .into(imageView)
+        imageView.setOnClickListener {
+            // Create an Intent to open RecipeScreen
+            val intent = Intent(this@UserScreen, RecipieScreen::class.java)
+            // Pass the recipeId to the RecipeScreen
+            intent.putExtra("RECIPE_ID", recipeId)
+            startActivity(intent)
+        }
+        // Create TextView dynamically for the recipe title
+        val textView = TextView(this)
+        textView.text = recipeTitle
+        textView.gravity = Gravity.CENTER
+        textView.layoutParams = LinearLayout.LayoutParams(
+            LinearLayout.LayoutParams.MATCH_PARENT,
+            LinearLayout.LayoutParams.WRAP_CONTENT
+        )
 
-        // Add the ImageView to the current row layout
-        currentRowLayout?.addView(imageView)
+        // Add ImageView and TextView to the vertical layout
+        verticalLayout.addView(imageView)
+        verticalLayout.addView(textView)
+
+        // Add the vertical layout to the current row layout
+        currentRowLayout?.addView(verticalLayout)
 
         // Increment the image counter
         imageCounter++
     }
+
 
     private fun displaySavedRecipes(recipeDataList: ArrayList<Triple<String, String, String>>) {
         // Remove all previous views in the recipeLinearLayout
@@ -225,20 +259,29 @@ class UserScreen : AppCompatActivity() {
                 }
             }
 
-            // Add up to 3 ImageViews to the rowLayout
+            // Add up to 3 ImageViews and TextViews to the rowLayout
             for (j in 0 until 3) {
                 if (i + j < recipeDataList.size) {
                     val (recipeId, recipeName, imageUrl) = recipeDataList[i + j]
 
+                    // Create a vertical layout to hold the image and the recipe name
+                    val verticalLayout = LinearLayout(this).apply {
+                        orientation = LinearLayout.VERTICAL
+                        layoutParams = LinearLayout.LayoutParams(
+                            0,  // Set width to 0 to use weight for equal distribution
+                            LinearLayout.LayoutParams.WRAP_CONTENT
+                        ).apply {
+                            weight = 1f // Each vertical layout takes equal weight
+                            setMargins(8, 8, 8, 8) // Margin between items
+                        }
+                    }
+
                     // Create ImageView for each recipe
                     val imageView = ImageView(this).apply {
                         layoutParams = LinearLayout.LayoutParams(
-                            0, // Set width to 0 to use weight for equal distribution
+                            LinearLayout.LayoutParams.MATCH_PARENT,
                             300 // Fixed height for the images
-                        ).apply {
-                            weight = 1f // Each ImageView takes equal weight
-                            setMargins(8, 8, 8, 8) // Margin between images
-                        }
+                        )
                         adjustViewBounds = true
                         scaleType = ImageView.ScaleType.CENTER_CROP
                     }
@@ -248,16 +291,29 @@ class UserScreen : AppCompatActivity() {
                         .load(imageUrl)
                         .centerCrop()
                         .into(imageView)
-
-                    // Set click listener for the image
                     imageView.setOnClickListener {
-                        Toast.makeText(this, "Selected Recipe: $recipeName", Toast.LENGTH_SHORT)
-                            .show()
-                        // Handle image click events, e.g., open recipe details
+                        // Create an Intent to open RecipeScreen
+                        val intent = Intent(this@UserScreen, RecipieScreen::class.java)
+                        // Pass the recipeId to the RecipeScreen
+                        intent.putExtra("RECIPE_ID", recipeId)
+                        startActivity(intent)
+                    }
+                    // Create TextView for the recipe name
+                    val textView = TextView(this).apply {
+                        text = recipeName
+                        gravity = Gravity.CENTER
+                        layoutParams = LinearLayout.LayoutParams(
+                            LinearLayout.LayoutParams.MATCH_PARENT,
+                            LinearLayout.LayoutParams.WRAP_CONTENT
+                        )
                     }
 
-                    // Add the ImageView to the rowLayout
-                    rowLayout.addView(imageView)
+                    // Add ImageView and TextView to the vertical layout
+                    verticalLayout.addView(imageView)
+                    verticalLayout.addView(textView)
+
+                    // Add the vertical layout to the rowLayout
+                    rowLayout.addView(verticalLayout)
                 } else {
                     // Add empty space for missing items to keep 3 items per row
                     val emptyView = View(this).apply {
@@ -272,8 +328,9 @@ class UserScreen : AppCompatActivity() {
                 }
             }
 
-            // Add the rowLayout to the recipeLinearLayout
+            // Add the rowLayout to the containerRecipe
             containerRecipe.addView(rowLayout)
         }
     }
+
 }
