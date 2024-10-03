@@ -7,7 +7,6 @@ import com.example.recipeez.R
 import com.example.recipeez.view.fragments.Home
 import com.example.recipeez.view.fragments.SearchScreen
 import com.example.recipeez.view.fragments.UserAccount
-//import com.example.recipeez.view.fragments.Settings
 import com.google.android.material.bottomnavigation.BottomNavigationView
 
 class Main : AppCompatActivity() {
@@ -34,7 +33,7 @@ class Main : AppCompatActivity() {
                     true
                 }
                 R.id.search -> {
-                    loadFragment(SearchScreen())  // Load Settings fragment
+                    loadFragment(SearchScreen())  // Load Search fragment
                     true
                 }
                 else -> false  // Return false for unrecognized menu items
@@ -43,10 +42,9 @@ class Main : AppCompatActivity() {
     }
 
     // A method to replace the current fragment in the FrameLayout container
-    private fun loadFragment(fragment: Fragment) {
+    private fun loadFragment(fragment: Fragment) {  // Accept any fragment, not just Home
         val transaction = supportFragmentManager.beginTransaction()
         transaction.replace(R.id.frame_layout, fragment)
         transaction.commitAllowingStateLoss()  // Use this if you are getting 'IllegalStateException'
     }
 }
-

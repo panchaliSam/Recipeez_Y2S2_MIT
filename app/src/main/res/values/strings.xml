@@ -125,4 +125,16 @@
     <string name="failed_to_add_recipe">Failed to add recipe</string>
     <string name="log_in_to_submit">Please log in to submit a recipe</string>
 
+    <string name="closeEditProfile">Close Edit Profile</string>
+
+
+    <!-- Reset Password -->
+    <string name="reset_password">Reset Password</string>
+    <string name="old_password">Old Password</string>
+    <string name="new_password">New Password</string>
+    <string name="confirm_password">Confirm New Password</string>
+    <string name="close">Close</string>
+    <string name="save_password">Save Password</string>
+
+
 </resources>

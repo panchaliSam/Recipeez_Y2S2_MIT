@@ -59,6 +59,24 @@ class UserAccount : Fragment() {
                 .addToBackStack(null) // Add to back stack so user can navigate back
                 .commit()
         }
+
+        // Edit Profile button click listener
+        binding.editProfile.setOnClickListener {
+            val userEditProfileFragment = UserEditProfile.newInstance()
+            parentFragmentManager.beginTransaction()
+                .replace(R.id.fragment_container, userEditProfileFragment)
+                .addToBackStack(null)
+                .commit()
+        }
+
+        //Reset Password button click listener
+        binding.resetPassword.setOnClickListener {
+            val resetPasswordFragment = ResetPassword.newInstance()
+            parentFragmentManager.beginTransaction()
+                .replace(R.id.fragment_container, resetPasswordFragment)
+                .addToBackStack(null)
+                .commit()
+        }
     }
 
     private fun fetchUserData() {
@@ -70,16 +88,23 @@ class UserAccount : Fragment() {
             database.child(currentUserId).get().addOnSuccessListener { snapshot ->
                 if (snapshot.exists()) {
                     val email = snapshot.child("email").value.toString()
-                    val imageUrl = snapshot.child("imageUrl").value.toString()
+                    val profileImageUrl = snapshot.child("profileImage").value?.toString()
 
                     // Set user email in the TextView
                     binding.userEmailTextView.text = email
 
-                    // Load the user's profile image using Glide
-                    Glide.with(this)
-                        .load(imageUrl)
-                        .placeholder(R.drawable.user) // Default image in case there's no profile image
-                        .into(binding.profileImageView)
+                    // Check if the profileImageUrl exists and is not empty
+                    if (!profileImageUrl.isNullOrEmpty()) {
+                        // Load the user's profile image using Glide
+                        Glide.with(this)
+                            .load(profileImageUrl)
+                            .placeholder(R.drawable.user) // Default image if loading fails
+                            .error(R.drawable.user) // Default image if URL is invalid
+                            .into(binding.profileImageView)
+                    } else {
+                        // If the user does not have a profile picture, load the default image
+                        binding.profileImageView.setImageResource(R.drawable.user)
+                    }
                 } else {
                     Toast.makeText(requireContext(), "User data not found", Toast.LENGTH_SHORT).show()
                 }
@@ -91,6 +116,7 @@ class UserAccount : Fragment() {
             Toast.makeText(requireContext(), "User not logged in", Toast.LENGTH_SHORT).show()
         }
     }
+
 
     override fun onDestroyView() {
         super.onDestroyView()
