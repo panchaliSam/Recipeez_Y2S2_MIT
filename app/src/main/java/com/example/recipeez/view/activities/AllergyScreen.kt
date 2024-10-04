@@ -2,6 +2,7 @@ package com.example.recipeez.view.activities
 
 import android.annotation.SuppressLint
 import android.content.Intent
+import android.graphics.Color
 import android.os.Bundle
 import android.widget.Button
 import android.widget.ImageButton
@@ -74,6 +75,7 @@ class AllergyScreen : AppCompatActivity() {
 
         // Continue button saves selected allergies to Firebase
         continueButton.setOnClickListener {
+            continueButton.setBackgroundColor(Color.parseColor("#2F5233"))
             saveSelectedAllergies()
         }
 

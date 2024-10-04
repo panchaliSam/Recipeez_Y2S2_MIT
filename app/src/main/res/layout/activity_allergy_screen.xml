@@ -55,7 +55,7 @@
             android:layout_margin="20dp"
             android:layout_marginTop="2dp"
             android:layout_marginEnd="16dp"
-            android:backgroundTint="@color/btnActive"
+            android:backgroundTint="@color/blue"
             android:text="Skip"
             android:textColor="#FFFFFF"
             android:textSize="14sp"
@@ -78,7 +78,7 @@
         android:id="@+id/cuisineGrid"
         android:layout_width="300dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"
+        android:layout_marginTop="10dp"
         android:alignmentMode="alignMargins"
         android:clipChildren="false"
         android:clipToPadding="false"
@@ -313,8 +313,8 @@
         android:id="@+id/continueButton"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"
-        android:backgroundTint="@color/btnActive"
+        android:layout_marginTop="0dp"
+        android:backgroundTint="@color/grey"
         android:text="Continue"
         android:textColor="#FFFFFF" />
 </LinearLayout>

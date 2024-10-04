@@ -2,6 +2,7 @@ package com.example.recipeez.view.activities
 
 import android.annotation.SuppressLint
 import android.content.Intent
+import android.graphics.Color
 import android.os.Bundle
 import android.widget.Button
 import android.widget.ImageButton
@@ -74,6 +75,8 @@ class CuisinesScreen : AppCompatActivity() {
 
         // Continue button saves selected cuisines to Firebase
         continueButton.setOnClickListener {
+            continueButton.setBackgroundColor(Color.parseColor("#2F5233"))
+
             saveSelectedCuisines()
         }
     }

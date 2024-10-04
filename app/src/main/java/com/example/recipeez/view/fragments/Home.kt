@@ -24,6 +24,9 @@ class Home : Fragment() {
     private lateinit var editorsChoice: Button
     private lateinit var forYou: Button
 
+    private var isInitialLoad: Boolean = true
+
+
     @SuppressLint("MissingInflatedId")
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -79,10 +82,16 @@ class Home : Fragment() {
                 val cuisinesList = snapshot.child("cuisines").children.mapNotNull { it.getValue(String::class.java) }
                 val cuisinePreference = cuisinesList.firstOrNull() ?: ""
 
-                if (forYouSelected) {
-                    loadRecipes(foodType, cuisinePreference)
+                // Check if it's the initial load
+                if (isInitialLoad) {
+                    loadRecipes() // Load all recipes initially
+                    isInitialLoad = false // Set to false after initial load
                 } else {
-                    loadRecipes()
+                    if (forYouSelected) {
+                        loadRecipes(foodType, cuisinePreference)
+                    } else {
+                        loadRecipes() // Load all recipes if Editors Choice is selected after initial load
+                    }
                 }
             }
 
@@ -227,12 +236,12 @@ class Home : Fragment() {
 
     private fun setButtonStyle(activeButton: Button, inactiveButton: Button) {
         activeButton.apply {
-            setBackgroundColor(Color.parseColor("#FF3F6C"))
+            setBackgroundColor(Color.parseColor("#2F5233"))
             setTextColor(Color.WHITE)
         }
         inactiveButton.apply {
-            setBackgroundColor(Color.TRANSPARENT)
-            setTextColor(Color.parseColor("#FF3F6C"))
+            setBackgroundColor(Color.WHITE)
+            setTextColor(Color.parseColor("#FF000000"))
         }
     }
 }
