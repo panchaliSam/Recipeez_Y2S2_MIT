@@ -4,9 +4,11 @@ import android.content.Intent
 import android.os.Bundle
 import android.view.Gravity
 import android.view.View
+import android.widget.AdapterView
 import android.widget.GridLayout
 import android.widget.ImageView
 import android.widget.LinearLayout
+import android.widget.Spinner
 import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
@@ -28,8 +30,12 @@ class SaveScreen : AppCompatActivity() {
     private lateinit var recipeLinearLayout: LinearLayout
     private lateinit var auth: FirebaseAuth
 
+    private lateinit var sortByCuisineSpinner: Spinner
+    private lateinit var sortByFoodTypeSpinner: Spinner
     // Store all recipes with recipeId, recipeName, and imageUrl
     private var recipeDataList = ArrayList<Triple<String, String, String>>()
+    private var filteredRecipeDataList = ArrayList<Triple<String, String, String>>()
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
@@ -41,14 +47,85 @@ class SaveScreen : AppCompatActivity() {
         // Reference to the LinearLayout in the layout file
         recipeLinearLayout = findViewById(R.id.recipeLinearLayout)
 
+        // Initialize Spinners
+        sortByCuisineSpinner = findViewById(R.id.sortByCuisineSpinner)
+        sortByFoodTypeSpinner = findViewById(R.id.sortByFoodTypeSpinner)
+
+        setupSpinnerListeners()
         // Get current user
         val currentUser = auth.currentUser
         if (currentUser != null) {
             loadSavedRecipes(currentUser.uid)
+
         } else {
             Toast.makeText(this, "No user authenticated", Toast.LENGTH_SHORT).show()
         }
     }
+    private fun setupSpinnerListeners() {
+        // Cuisine spinner listener
+        sortByCuisineSpinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+            override fun onItemSelected(parent: AdapterView<*>, view: View?, position: Int, id: Long) {
+                filterRecipes()
+            }
+
+            override fun onNothingSelected(parent: AdapterView<*>) {
+                // No action needed
+            }
+        }
+
+        // Food type spinner listener (veg/non-veg)
+        sortByFoodTypeSpinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+            override fun onItemSelected(parent: AdapterView<*>, view: View?, position: Int, id: Long) {
+                filterRecipes()
+            }
+
+            override fun onNothingSelected(parent: AdapterView<*>) {
+                // No action needed
+            }
+        }
+    }
+
+    private fun filterRecipes() {
+        // Get the selected cuisine and food type
+        val selectedCuisine = sortByCuisineSpinner.selectedItem.toString()
+        val selectedFoodType = sortByFoodTypeSpinner.selectedItem.toString()
+
+        // Clear the filtered list
+        filteredRecipeDataList.clear()
+
+        // Iterate through all recipes and check the database for cuisine and foodType match
+        for (recipe in recipeDataList) {
+            val (recipeId, recipeName, imageUrl) = recipe
+
+            // Fetch the recipe data from the Firebase 'recipes' table
+            val recipeRef = FirebaseDatabase.getInstance().getReference("recipes").child(recipeId)
+            recipeRef.addListenerForSingleValueEvent(object : ValueEventListener {
+                override fun onDataChange(recipeSnapshot: DataSnapshot) {
+                    if (recipeSnapshot.exists()) {
+                        val recipeCuisine = recipeSnapshot.child("cuisine").value as? String ?: "Unknown"
+                        val recipeFoodType = recipeSnapshot.child("foodType").value as? String ?: "Unknown"
+
+                        // Filter logic based on selected cuisine and food type
+                        val cuisineMatch = selectedCuisine == "All" || recipeCuisine == selectedCuisine
+                        val foodTypeMatch = selectedFoodType == "All" || recipeFoodType == selectedFoodType
+
+                        if (cuisineMatch && foodTypeMatch) {
+                            // Add recipe to filtered list if it matches
+                            filteredRecipeDataList.add(Triple(recipeId, recipeName, imageUrl))
+
+                            // Display the filtered recipes
+                            displaySavedRecipes(filteredRecipeDataList)
+                        }
+                    }
+                }
+
+                override fun onCancelled(error: DatabaseError) {
+                    Toast.makeText(this@SaveScreen, "Error fetching recipe data", Toast.LENGTH_SHORT).show()
+                }
+            })
+        }
+    }
+
     private fun loadSavedRecipes(userId: String) {
         // Access the savedRecipes under the userId
         usersRef.child(userId).child("savedRecipes").addListenerForSingleValueEvent(object : ValueEventListener {
