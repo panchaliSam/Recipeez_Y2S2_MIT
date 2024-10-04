@@ -8,6 +8,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.MediaController
@@ -51,7 +52,7 @@ class RecipeScreen : AppCompatActivity() {
     private lateinit var stepsContainer: LinearLayout
     private lateinit var tabs: TabLayout
     private lateinit var shareButton: ImageView
-    private lateinit var bottomNavigationView: BottomNavigationView
+//    private lateinit var bottomNavigationView: BottomNavigationView
 
 
     private var isLiked = false
@@ -64,24 +65,24 @@ class RecipeScreen : AppCompatActivity() {
         enableEdgeToEdge()
         setContentView(R.layout.fragment_recipe_screen)
 
-        bottomNavigationView = findViewById(R.id.bottom_navigation)
-        bottomNavigationView.setOnItemSelectedListener { item ->
-            when (item.itemId) {
-                R.id.home -> {
-                    loadFragment(Home())  // Load Home fragment
-                    true
-                }
-                R.id.profile -> {
-                    loadFragment(UserAccount())  // Load Profile fragment
-                    true
-                }
-                R.id.search -> {
-                    loadFragment(SearchScreen())  // Load Search fragment
-                    true
-                }
-                else -> false  // Return false for unrecognized menu items
-            }
-        }
+//        bottomNavigationView = findViewById(R.id.bottom_navigation)
+//        bottomNavigationView.setOnItemSelectedListener { item ->
+//            when (item.itemId) {
+//                R.id.home -> {
+//                    loadFragment(Home())  // Load Home fragment
+//                    true
+//                }
+//                R.id.profile -> {
+//                    loadFragment(UserAccount())  // Load Profile fragment
+//                    true
+//                }
+//                R.id.search -> {
+//                    loadFragment(SearchScreen())  // Load Search fragment
+//                    true
+//                }
+//                else -> false  // Return false for unrecognized menu items
+//            }
+//        }
 
         // Retrieve the recipe ID from the Intent
         val recipeId = intent.getStringExtra("RECIPE_ID")
@@ -435,15 +436,15 @@ class RecipeScreen : AppCompatActivity() {
         }
     }
 
-    private fun loadFragment(fragment: Fragment): Boolean {
-        // Get the FragmentManager and start a transaction
-        val transaction = supportFragmentManager.beginTransaction()
-        // Replace the container view with the new fragment
-        transaction.replace(R.id.fragment_container, fragment) // Make sure you have a container in your layout
-        // Commit the transaction
-        transaction.commit()
-        return true
-    }
+//    private fun loadFragment(fragment: Fragment): Boolean {
+//        // Get the FragmentManager and start a transaction
+//        val transaction = supportFragmentManager.beginTransaction()
+//        // Replace the container view with the new fragment
+//        transaction.replace(R.id.fragment_container, fragment) // Make sure you have a container in your layout
+//        // Commit the transaction
+//        transaction.commit()
+//        return true
+//    }
 
 }
 
