@@ -8,20 +8,6 @@
     android:backgroundTint="@color/white"
     tools:context=".view.activities.LoginScreen">
 
-    <ImageButton
-        android:id="@+id/loginBackBtn"
-        android:layout_width="37dp"
-        android:layout_height="53dp"
-        android:layout_marginTop="32dp"
-        android:background="?attr/selectableItemBackgroundBorderless"
-        android:contentDescription="@string/loginTitle"
-        android:src="@drawable/arrowleft"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.042"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        tools:ignore="TouchTargetSizeCheck" />
-
     <TextView
         android:id="@+id/loginTitle"
         android:layout_width="wrap_content"

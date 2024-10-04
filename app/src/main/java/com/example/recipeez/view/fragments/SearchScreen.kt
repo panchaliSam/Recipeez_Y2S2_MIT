@@ -1,10 +1,8 @@
 package com.example.recipeez.view.fragments
 
-import android.annotation.SuppressLint
 import android.content.Intent
 import android.os.Bundle
 import android.view.*
-import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
@@ -13,44 +11,30 @@ import androidx.appcompat.widget.SearchView
 import androidx.fragment.app.Fragment
 import com.bumptech.glide.Glide
 import com.example.recipeez.R
-import com.example.recipeez.view.fragments.Home
-import com.example.recipeez.view.fragments.RecipeScreen
-import com.google.firebase.database.DataSnapshot
-import com.google.firebase.database.DatabaseError
-import com.google.firebase.database.DatabaseReference
-import com.google.firebase.database.FirebaseDatabase
-import com.google.firebase.database.ValueEventListener
+import com.google.firebase.database.*
 
 class SearchScreen : Fragment() {
+
     private lateinit var database: DatabaseReference
     private lateinit var linearLayoutRecipes: LinearLayout
     private lateinit var searchView: SearchView
-    private lateinit var backButton: ImageButton
     private var recipeDataList = ArrayList<Triple<String, String, String>>() // Store all recipes
 
-    @SuppressLint("MissingInflatedId")
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
+        // Inflate the layout for this fragment
         val view = inflater.inflate(R.layout.fragment_search_screen, container, false)
 
-        // Initialize the LinearLayout by finding it by its ID
+        // Initialize views using safe calls to avoid NullPointerException
         linearLayoutRecipes = view.findViewById(R.id.linearLayoutRecipes)
         searchView = view.findViewById(R.id.searchView)
-        backButton = view.findViewById(R.id.backButton)
-
-        backButton.setOnClickListener {
-            // Replace activity transition with fragment transition or navigation action
-            val intent = Intent(requireContext(), Home::class.java)
-            startActivity(intent)
-            requireActivity().finish()
-        }
 
         // Initialize Firebase reference
         database = FirebaseDatabase.getInstance().getReference("recipes")
 
-        // Fetch recipes from Firebase and display them
+        // Fetch recipes from Firebase
         fetchRecipes()
 
         // Implement search functionality
@@ -141,7 +125,11 @@ class SearchScreen : Fragment() {
 
             val (imageUrl, recipeId, recipeTitle) = recipeDataList[i]
 
-            Glide.with(requireContext()).load(imageUrl).into(imageView)
+            // Ensure the image URL is valid or load a default image
+            Glide.with(requireContext())
+                .load(imageUrl)
+                .error(R.drawable.spanish) // Load a default image in case of an error
+                .into(imageView)
 
             imageView.setOnClickListener {
                 val intent = Intent(requireContext(), RecipeScreen::class.java)

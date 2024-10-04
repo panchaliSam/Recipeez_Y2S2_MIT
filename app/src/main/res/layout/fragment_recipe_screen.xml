@@ -4,6 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/btnActive"
+    android:backgroundTint="@color/white"
     tools:context=".view.fragments.RecipeScreen">
 
     <ScrollView
@@ -28,7 +30,11 @@
                 android:id="@+id/recipe_title"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
                 android:text="Your Recipes"
+                android:textColor="@color/black"
+                android:textColorHighlight="@color/black"
+                android:textColorHint="@color/black"
                 android:textSize="24sp"
                 android:textStyle="bold"
                 app:layout_constraintStart_toStartOf="parent"
@@ -38,9 +44,11 @@
                 android:id="@+id/reviews_label"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
                 android:text="Reviews for today"
-                android:textSize="16sp"
                 android:textColor="@color/black"
+                android:textColorHighlight="@color/black"
+                android:textSize="16sp"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/recipe_title" />
 
@@ -48,34 +56,39 @@
                 android:id="@+id/recipe_image"
                 android:layout_width="match_parent"
                 android:layout_height="200dp"
-                android:scaleType="centerCrop"
                 android:contentDescription="Recipe image"
+                android:scaleType="centerCrop"
                 app:layout_constraintTop_toBottomOf="@id/reviews_label" />
 
             <TextView
                 android:id="@+id/preparation_label"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Preparation"
-                android:textStyle="bold"
+                android:layout_marginStart="16dp"
                 android:layout_marginTop="16dp"
-                app:layout_constraintTop_toBottomOf="@id/recipe_image"
-                app:layout_constraintStart_toStartOf="parent" />
+                android:text="Preparation"
+                android:textColor="@color/black"
+                android:textColorHighlight="@color/black"
+                android:textColorHint="@color/black"
+                android:textColorLink="@color/black"
+                android:textStyle="bold"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/recipe_image" />
 
             <LinearLayout
                 android:id="@+id/action_buttons"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:gravity="center_horizontal"
                 android:layout_marginTop="16dp"
+                android:gravity="center_horizontal"
+                android:orientation="horizontal"
                 app:layout_constraintTop_toBottomOf="@id/preparation_label">
 
                 <LinearLayout
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:orientation="vertical"
-                    android:gravity="center">
+                    android:gravity="center"
+                    android:orientation="vertical">
 
                     <ImageView
                         android:id="@+id/like_button"
@@ -88,17 +101,21 @@
                         android:id="@+id/like_text"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:gravity="center"
                         android:text="Like"
-                        android:textSize="14sp"
-                        android:gravity="center"/>
+                        android:textColor="@color/black"
+                        android:textColorHighlight="@color/black"
+                        android:textColorHint="@color/black"
+                        android:textColorLink="@color/black"
+                        android:textSize="14sp" />
                 </LinearLayout>
 
                 <LinearLayout
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:orientation="vertical"
+                    android:layout_marginStart="16dp"
                     android:gravity="center"
-                    android:layout_marginStart="16dp">
+                    android:orientation="vertical">
 
                     <ImageView
                         android:id="@+id/save_button"
@@ -111,17 +128,21 @@
                         android:id="@+id/save_text"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:gravity="center"
                         android:text="Save"
-                        android:textSize="14sp"
-                        android:gravity="center"/>
+                        android:textColor="@color/black"
+                        android:textColorHighlight="@color/black"
+                        android:textColorHint="@color/black"
+                        android:textColorLink="@color/black"
+                        android:textSize="14sp" />
                 </LinearLayout>
 
                 <LinearLayout
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:orientation="vertical"
+                    android:layout_marginStart="16dp"
                     android:gravity="center"
-                    android:layout_marginStart="16dp">
+                    android:orientation="vertical">
 
                     <ImageView
                         android:id="@+id/share_button"
@@ -134,9 +155,13 @@
                         android:id="@+id/share_text"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:gravity="center"
                         android:text="Share"
-                        android:textSize="14sp"
-                        android:gravity="center"/>
+                        android:textColor="@color/black"
+                        android:textColorHighlight="@color/black"
+                        android:textColorHint="@color/black"
+                        android:textColorLink="@color/black"
+                        android:textSize="14sp" />
                 </LinearLayout>
 
             </LinearLayout>
@@ -145,32 +170,44 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
-                app:layout_constraintTop_toBottomOf="@id/action_buttons"
-                app:layout_constraintStart_toStartOf="parent">
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/action_buttons">
 
                 <TextView
                     android:id="@+id/total_time"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
+                    android:layout_weight="1"
                     android:text="Total Time\n1 hr 3 min"
                     android:textAlignment="center"
-                    android:layout_weight="1" />
+                    android:textColor="@color/black"
+                    android:textColorHighlight="@color/black"
+                    android:textColorHint="@color/black"
+                    android:textColorLink="@color/black" />
 
                 <TextView
                     android:id="@+id/prep_time"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
+                    android:layout_weight="1"
                     android:text="Prep Time\n20 min"
                     android:textAlignment="center"
-                    android:layout_weight="1" />
+                    android:textColor="@color/black"
+                    android:textColorHighlight="@color/black"
+                    android:textColorHint="@color/black"
+                    android:textColorLink="@color/black" />
 
                 <TextView
                     android:id="@+id/cook_time"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
+                    android:layout_weight="1"
                     android:text="Cook Time\n40 min"
                     android:textAlignment="center"
-                    android:layout_weight="1" />
+                    android:textColor="@color/black"
+                    android:textColorHighlight="@color/black"
+                    android:textColorHint="@color/black"
+                    android:textColorLink="@color/black" />
             </LinearLayout>
 
             <com.google.android.material.tabs.TabLayout
@@ -178,14 +215,16 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
-                app:tabMode="fixed"
+                app:layout_constraintTop_toBottomOf="@id/action_buttons"
                 app:tabGravity="fill"
-                app:layout_constraintTop_toBottomOf="@id/action_buttons">
+                app:tabMode="fixed">
 
                 <com.google.android.material.tabs.TabItem
                     android:id="@+id/tab_ingredients"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:background="@color/black"
+                    android:backgroundTint="@color/black"
                     android:text="Ingredients" />
 
                 <com.google.android.material.tabs.TabItem
@@ -200,7 +239,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
-                app:layout_constraintTop_toBottomOf="@id/tabs"/>
+                app:layout_constraintTop_toBottomOf="@id/tabs" />
 
             <LinearLayout
                 android:id="@+id/steps_container"
@@ -208,17 +247,39 @@
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
                 android:visibility="gone"
-                app:layout_constraintTop_toBottomOf="@id/tabs"/> <!-- Initially hidden -->
+                app:layout_constraintTop_toBottomOf="@id/tabs" />
 
             <VideoView
                 android:id="@+id/recipe_video"
                 android:layout_width="match_parent"
                 android:layout_height="200dp"
-                android:scaleType="centerCrop"
                 android:contentDescription="Recipe video"
-                app:layout_constraintTop_toBottomOf="@id/ingredients_container"/>
+                android:scaleType="centerCrop"
+                app:layout_constraintTop_toBottomOf="@id/ingredients_container" />
+
+            <ImageButton
+                android:id="@+id/loginBackBtn"
+                android:layout_width="37dp"
+                android:layout_height="53dp"
+                android:layout_marginTop="32dp"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:contentDescription="@string/loginTitle"
+                android:src="@drawable/arrowleft"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.01"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                tools:ignore="TouchTargetSizeCheck" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
     </ScrollView>
+
+    <com.google.android.material.bottomnavigation.BottomNavigationView
+        android:id="@+id/bottom_navigation"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom"
+        android:background="@color/black"
+        app:menu="@menu/activity_bottom_nav" />
 
 </FrameLayout>
