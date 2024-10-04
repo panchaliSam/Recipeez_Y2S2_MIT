@@ -77,6 +77,15 @@ class UserAccount : Fragment() {
                 .addToBackStack(null)
                 .commit()
         }
+
+        //Saved Recipes
+        binding.saveRecipe.setOnClickListener {
+            val savedRecipeFragment = SaveScreen()
+            parentFragmentManager.beginTransaction()
+                .replace(R.id.fragment_container, savedRecipeFragment) // Use the correct container ID
+                .addToBackStack(null) // Add to back stack so user can navigate back
+                .commit()
+        }
     }
 
     private fun fetchUserData() {

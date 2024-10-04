@@ -97,6 +97,18 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/viewMyRecipes" />
 
+        <Button
+            android:id="@+id/saveRecipe"
+            android:layout_width="0dp"
+            android:layout_height="58dp"
+            android:layout_marginTop="36dp"
+            android:backgroundTint="@color/btnActive"
+            android:text="@string/saveRecipe"
+            android:textColor="@color/white"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/resetPassword" />
+
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <!-- Fragment container for loading other fragments -->
