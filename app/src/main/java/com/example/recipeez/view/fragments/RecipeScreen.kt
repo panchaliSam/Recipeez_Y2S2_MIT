@@ -16,12 +16,15 @@ import android.widget.Toast
 import android.widget.VideoView
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.children
+import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.example.recipeez.R
+import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.tabs.TabLayout
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.DataSnapshot
@@ -48,16 +51,37 @@ class RecipeScreen : AppCompatActivity() {
     private lateinit var stepsContainer: LinearLayout
     private lateinit var tabs: TabLayout
     private lateinit var shareButton: ImageView
+    private lateinit var bottomNavigationView: BottomNavigationView
 
 
     private var isLiked = false
     private var isSaved = false
     private var isShowingIngredients = true // Track the current state
+
     @SuppressLint("MissingInflatedId")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContentView(R.layout.fragment_recipe_screen)
+
+        bottomNavigationView = findViewById(R.id.bottom_navigation)
+        bottomNavigationView.setOnItemSelectedListener { item ->
+            when (item.itemId) {
+                R.id.home -> {
+                    loadFragment(Home())  // Load Home fragment
+                    true
+                }
+                R.id.profile -> {
+                    loadFragment(UserAccount())  // Load Profile fragment
+                    true
+                }
+                R.id.search -> {
+                    loadFragment(SearchScreen())  // Load Search fragment
+                    true
+                }
+                else -> false  // Return false for unrecognized menu items
+            }
+        }
 
         // Retrieve the recipe ID from the Intent
         val recipeId = intent.getStringExtra("RECIPE_ID")
@@ -207,7 +231,8 @@ class RecipeScreen : AppCompatActivity() {
                     val cookingTime = recipeData["cookingTime"] as? String
                     val imageUrl = recipeData["imageUrl"] as? String
                     val videoUrl = recipeData["videoUrl"] as? String
-                    val ingredientsList = recipeData["ingredientsList"] as? List<String> ?: emptyList()
+                    val ingredientsList =
+                        recipeData["ingredientsList"] as? List<String> ?: emptyList()
                     val quantityList = recipeData["quantityList"] as? List<String> ?: emptyList()
 
                     val stepsList = recipeData["stepsList"] as? List<String> ?: emptyList()
@@ -235,6 +260,7 @@ class RecipeScreen : AppCompatActivity() {
             }
         })
     }
+
     // Function to save the recipe to the user's saved recipes
     private fun saveRecipeToUser(recipeId: String) {
         val userSavedRef = usersRef.child(userId).child("savedRecipes")
@@ -242,7 +268,8 @@ class RecipeScreen : AppCompatActivity() {
         // Add the recipe ID to the user's saved recipes list
         userSavedRef.addListenerForSingleValueEvent(object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
-                val savedRecipes = snapshot.getValue(object : GenericTypeIndicator<List<String>>() {})
+                val savedRecipes =
+                    snapshot.getValue(object : GenericTypeIndicator<List<String>>() {})
                 val updatedRecipes = savedRecipes?.toMutableList() ?: mutableListOf()
 
                 if (!updatedRecipes.contains(recipeId)) {
@@ -250,7 +277,8 @@ class RecipeScreen : AppCompatActivity() {
                     userSavedRef.setValue(updatedRecipes)
                     Toast.makeText(this@RecipeScreen, "Recipe saved", Toast.LENGTH_SHORT).show()
                 } else {
-                    Toast.makeText(this@RecipeScreen, "Recipe already saved", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(this@RecipeScreen, "Recipe already saved", Toast.LENGTH_SHORT)
+                        .show()
                 }
             }
 
@@ -265,7 +293,8 @@ class RecipeScreen : AppCompatActivity() {
         val userSavedRef = usersRef.child(userId).child("savedRecipes")
         userSavedRef.addListenerForSingleValueEvent(object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
-                val savedRecipes = snapshot.getValue(object : GenericTypeIndicator<List<String>>() {})
+                val savedRecipes =
+                    snapshot.getValue(object : GenericTypeIndicator<List<String>>() {})
                 val updatedRecipes = savedRecipes?.toMutableList() ?: mutableListOf()
 
                 if (updatedRecipes.contains(recipeId)) {
@@ -286,15 +315,24 @@ class RecipeScreen : AppCompatActivity() {
         // Add the recipe ID to the user's saved recipes list
         userSavedRef.addListenerForSingleValueEvent(object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
-                val likedRecipes = snapshot.getValue(object : GenericTypeIndicator<List<String>>() {})
+                val likedRecipes =
+                    snapshot.getValue(object : GenericTypeIndicator<List<String>>() {})
                 val updatedRecipes = likedRecipes?.toMutableList() ?: mutableListOf()
 
                 if (!updatedRecipes.contains(recipeId)) {
                     updatedRecipes.add(recipeId)
                     userSavedRef.setValue(updatedRecipes)
-                    Toast.makeText(this@RecipeScreen, "Recipe added to wishlist", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(
+                        this@RecipeScreen,
+                        "Recipe added to wishlist",
+                        Toast.LENGTH_SHORT
+                    ).show()
                 } else {
-                    Toast.makeText(this@RecipeScreen, "Recipe already added to wishlist", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(
+                        this@RecipeScreen,
+                        "Recipe already added to wishlist",
+                        Toast.LENGTH_SHORT
+                    ).show()
                 }
             }
 
@@ -309,7 +347,8 @@ class RecipeScreen : AppCompatActivity() {
         val userSavedRef = usersRef.child(userId).child("likedRecipes")
         userSavedRef.addListenerForSingleValueEvent(object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
-                val likedRecipes = snapshot.getValue(object : GenericTypeIndicator<List<String>>() {})
+                val likedRecipes =
+                    snapshot.getValue(object : GenericTypeIndicator<List<String>>() {})
                 val updatedRecipes = likedRecipes?.toMutableList() ?: mutableListOf()
 
                 if (updatedRecipes.contains(recipeId)) {
@@ -323,6 +362,7 @@ class RecipeScreen : AppCompatActivity() {
             }
         })
     }
+
     private fun populateUI(
         name: String?,
         description: String?,
@@ -347,82 +387,63 @@ class RecipeScreen : AppCompatActivity() {
                 .load(imageUrl)
                 .into(recipeImageView)
         } else {
-            recipeImageView.visibility = View.GONE // Hide the ImageView if no image is available
+            recipeImageView.visibility = View.GONE
         }
+
         // Handle video URL
         if (!videoUrl.isNullOrEmpty()) {
             recipeVideoView.visibility = View.VISIBLE
-
-            // Set video URI and initialize MediaController
-            val videoUri = Uri.parse(videoUrl)
-            recipeVideoView.setVideoURI(videoUri)
+            recipeVideoView.setVideoURI(Uri.parse(videoUrl))
             val mediaController = MediaController(this)
-            recipeVideoView.setMediaController(mediaController)
             mediaController.setAnchorView(recipeVideoView)
-
-            // Start video playback (optional)
-            recipeVideoView.start()
+            recipeVideoView.setMediaController(mediaController)
+            recipeVideoView.requestFocus()
+            recipeVideoView.start() // Optional: auto-start the video
         } else {
-            recipeVideoView.visibility = View.GONE // Hide the VideoView if no video is available
-        }
-// Add ingredients and quantities dynamically
-        ingredientsContainer.removeAllViews() // Clear old views if any
-        for (i in ingredientsList.indices) {
-            // Create a horizontal LinearLayout for each ingredient and its quantity
-            val ingredientLayout = LinearLayout(this)
-            ingredientLayout.orientation = LinearLayout.HORIZONTAL
-            ingredientLayout.layoutParams = LinearLayout.LayoutParams(
-                LinearLayout.LayoutParams.MATCH_PARENT,
-                LinearLayout.LayoutParams.WRAP_CONTENT
-            )
-// Create and add the ingredient TextView
-            val ingredientView = TextView(this)
-            ingredientView.text = ingredientsList[i] // Set the ingredient name
-            ingredientView.textSize = 16f
-
-            // Set the width of the ingredient to wrap and align it to the right
-            val ingredientParams = LinearLayout.LayoutParams(
-                0, // 0 width to use weight for layout control
-                LinearLayout.LayoutParams.WRAP_CONTENT,
-                1f // Weight to push it to the right
-            )
-            ingredientParams.gravity = android.view.Gravity.END // Align to the right
-            ingredientView.layoutParams = ingredientParams
-
-            // Add ingredient to the layout
-            ingredientLayout.addView(ingredientView)
-
-            // Add the ingredientLayout to the parent container
-            ingredientsContainer.addView(ingredientLayout)
-            // Create and add the quantity TextView
-            val quantityView = TextView(this)
-            quantityView.text = quantityList[i] // Set the quantity
-            quantityView.textSize = 16f
-
-            // Set the width of quantity to wrap and align it to the left
-            val quantityParams = LinearLayout.LayoutParams(
-                0, // 0 width to use weight for layout control
-                LinearLayout.LayoutParams.WRAP_CONTENT,
-                1f // Weight to push it to the left
-            )
-            quantityView.layoutParams = quantityParams
-            ingredientLayout.addView(quantityView) // Add quantity to the layout
-
-
+            recipeVideoView.visibility = View.GONE
         }
 
+        // Populate ingredients
+        ingredientsContainer.removeAllViews()
+        ingredientsList.forEachIndexed { index, ingredient ->
+            val ingredientView = TextView(this).apply {
+                text =
+                    "${quantityList.getOrElse(index) { "" }} $ingredient" // Display quantity if available
+                layoutParams = LinearLayout.LayoutParams(
+                    LinearLayout.LayoutParams.MATCH_PARENT,
+                    LinearLayout.LayoutParams.WRAP_CONTENT
+                )
+                setPadding(16, 8, 16, 8)
+            }
+            ingredientsContainer.addView(ingredientView)
+            ingredientView.setTextColor(ContextCompat.getColor(this, R.color.black))
+        }
 
-        // Add steps dynamically
-        stepsContainer.removeAllViews() // Clear old views if any
-        for (step in stepsList) {
-            val stepView = TextView(this)
-            stepView.text = step
-            stepView.textSize = 16f
-            stepView.setPadding(0, 8, 0, 8)
+        // Populate steps
+        stepsContainer.removeAllViews()
+        stepsList.forEach { step ->
+            val stepView = TextView(this).apply {
+                text = step
+                layoutParams = LinearLayout.LayoutParams(
+                    LinearLayout.LayoutParams.MATCH_PARENT,
+                    LinearLayout.LayoutParams.WRAP_CONTENT
+                )
+                setPadding(16, 8, 16, 8)
+            }
             stepsContainer.addView(stepView)
+            stepView.setTextColor(ContextCompat.getColor(this, R.color.black))
         }
-
     }
 
+    private fun loadFragment(fragment: Fragment): Boolean {
+        // Get the FragmentManager and start a transaction
+        val transaction = supportFragmentManager.beginTransaction()
+        // Replace the container view with the new fragment
+        transaction.replace(R.id.fragment_container, fragment) // Make sure you have a container in your layout
+        // Commit the transaction
+        transaction.commit()
+        return true
+    }
 
 }
+
