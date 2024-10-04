@@ -97,6 +97,7 @@
     <string name="editProfile">Edit Profile</string>
     <string name="myRecipeBtn">My Recipe</string>
     <string name="resetPwdBtn">Reset Password</string>
+    <string name="saveRecipe">Saved Recipes</string>
 
     <!--Add New Recipe Content-->
     <string name="addRecipeTitle">Add New Recipe</string>
@@ -135,6 +136,23 @@
     <string name="confirm_password">Confirm New Password</string>
     <string name="close">Close</string>
     <string name="save_password">Save Password</string>
+
+    <string-array name="cuisine_array">
+        <item>Sort by cuisine</item>
+        <item>Sri Lankan</item>
+        <item>Indian</item>
+        <item>Chinese</item>
+        <item>Italian</item>
+        <item>Mexican</item>
+        <item>Japanese</item>
+        <item>Other</item>
+        <!-- Add more cuisines as needed -->
+    </string-array>
+
+    <string-array name="veg_nonveg_array">
+        <item>Non veg</item>
+        <item>Veg</item>
+    </string-array>
 
 
 </resources>
