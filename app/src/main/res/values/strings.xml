@@ -98,6 +98,7 @@
     <string name="myRecipeBtn">My Recipe</string>
     <string name="resetPwdBtn">Reset Password</string>
     <string name="saveRecipe">Saved Recipes</string>
+    <string name="userScreen">User Screen</string>
 
     <!--Add New Recipe Content-->
     <string name="addRecipeTitle">Add New Recipe</string>
