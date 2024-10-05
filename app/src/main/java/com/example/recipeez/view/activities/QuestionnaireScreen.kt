@@ -2,6 +2,7 @@ package com.example.recipeez.view.activities
 
 import android.annotation.SuppressLint
 import android.content.Intent
+import android.graphics.Color
 import android.os.Bundle
 import android.widget.Button
 import android.widget.ImageButton
@@ -60,6 +61,8 @@ class QuestionnaireScreen : AppCompatActivity() {
         // Set click listener for Continue button
         continueButton.setOnClickListener {
             if (isVegetarianSelected != null) {
+                // Change the background color of the continue button
+                continueButton.setBackgroundColor(Color.parseColor("#2F5233"))
                 // Save selection to Firebase
                 saveSelectionToFirebase(isVegetarianSelected!!)
             }

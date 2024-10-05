@@ -61,11 +61,6 @@ class LoginScreen : AppCompatActivity() {
         }
 
         // Handle "Login Back" button click to navigate to WelcomeScreen
-        binding.loginBackBtn.setOnClickListener {
-            val loginBackIntent = Intent(this, WelcomeScreen::class.java)
-            startActivity(loginBackIntent)
-            finish() // Optionally finish the LoginScreen activity if you don't want to return to it
-        }
 
         // Handle "Forgot Password" click
         binding.loginForgotPassword.setOnClickListener {
