@@ -227,7 +227,7 @@ class Home : Fragment() {
 
     private fun setButtonStyle(activeButton: Button, inactiveButton: Button) {
         activeButton.apply {
-            setBackgroundColor(Color.parseColor("#FF3F6C"))
+            setBackgroundColor(Color.parseColor("Black"))
             setTextColor(Color.WHITE)
         }
         inactiveButton.apply {
