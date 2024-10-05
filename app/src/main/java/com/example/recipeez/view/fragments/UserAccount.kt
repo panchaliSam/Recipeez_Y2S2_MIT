@@ -1,5 +1,6 @@
 package com.example.recipeez.view.fragments
 
+import android.content.Intent
 import android.os.Bundle
 import android.widget.Toast
 import androidx.fragment.app.Fragment
@@ -9,6 +10,8 @@ import android.view.ViewGroup
 import com.bumptech.glide.Glide
 import com.example.recipeez.R
 import com.example.recipeez.databinding.FragmentUserAccountBinding
+import com.example.recipeez.view.activities.SaveScreen
+import com.example.recipeez.view.activities.UserScreen
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.FirebaseDatabase
@@ -80,11 +83,14 @@ class UserAccount : Fragment() {
 
         //Saved Recipes
         binding.saveRecipe.setOnClickListener {
-            val savedRecipeFragment = SaveScreen()
-            parentFragmentManager.beginTransaction()
-                .replace(R.id.fragment_container, savedRecipeFragment) // Use the correct container ID
-                .addToBackStack(null) // Add to back stack so user can navigate back
-                .commit()
+            val intent = Intent(requireContext(), SaveScreen::class.java)
+            startActivity(intent)
+        }
+
+        //User Screen
+        binding.userScreen.setOnClickListener {
+            val intent = Intent(requireContext(), UserScreen::class.java)
+            startActivity(intent)
         }
     }
 
